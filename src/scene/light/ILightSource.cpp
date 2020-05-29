@@ -1,20 +1,20 @@
 #include "ILightSource.h"
 
 ILightSource::ILightSource() :
-    intensity(glm::vec3(1.0f))
+    intensity(QVector3D(1.0f, 1.0f, 1.0f))
 {
 
 }
 
-ILightSource::ILightSource(glm::vec3 intensity) :
+ILightSource::ILightSource(QVector3D intensity) :
     intensity(intensity) {
 
 }
 
-glm::vec3& ILightSource::getIntensity() {
+QVector3D& ILightSource::getIntensity() {
     return intensity;
 }
 
-void ILightSource::setIntensity(glm::vec3 intensity) {
+void ILightSource::setIntensity(QVector3D intensity) {
     this->intensity = intensity;
 }

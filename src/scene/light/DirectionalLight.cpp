@@ -5,23 +5,24 @@ DirectionalLight::DirectionalLight()
 
 }
 
-DirectionalLight::DirectionalLight(glm::vec3 intensity, glm::vec3 direction) :
+DirectionalLight::DirectionalLight(QVector3D intensity, QVector3D direction) :
     ILightSource(intensity) {
     setDirection(direction);
 }
 
-glm::vec3& DirectionalLight::getDirection() {
+QVector3D& DirectionalLight::getDirection() {
     return direction;
 }
 
-void DirectionalLight::setDirection(glm::vec3 direction) {
-    this->direction = glm::normalize(direction);
+void DirectionalLight::setDirection(QVector3D direction) {
+    this->direction = direction;
+    this->direction.normalize();
 }
 
-void DirectionalLight::sendToShader(ShaderProgram &shader, int index) {
-    shader.setInt("lightSource.type", 1);
+void DirectionalLight::sendToShader(QOpenGLShaderProgram &shader, int index) {
+    /*shader.setInt("lightSource.type", 1);
     shader.setUniform("lightSource.intensity", intensity);
-    shader.setUniform("lightSource.position", glm::vec3(0.0));
-    shader.setUniform("lightSource.direction", direction);
+    shader.setUniform("lightSource.position", QVector3D(0.0));
+    shader.setUniform("lightSource.direction", direction);*/
 }
 

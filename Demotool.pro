@@ -16,14 +16,54 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    openglwindow.cpp \
+    src/demo/Timeline.cpp \
+    src/demo/Clip.cpp \
+    src/scene/Scene.cpp \
+    src/scene/Camera.cpp \
+    src/scene/SceneObject.cpp \
+    src/scene/light/ILightSource.cpp \
+    src/scene/light/PointLight.cpp \
+    src/scene/light/DirectionalLight.cpp \
+    src/modelling/Geometry.cpp \
+    #src/modelling/Sphere.cpp \
+    #src/modelling/Plane.cpp \
+    #src/modelling/Cylinder.cpp \
+    #src/modelling/Tetraeder.cpp \
+    src/Material.cpp \
+    demo.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    openglwindow.h \
+    src/demo/Timeline.h \
+    src/demo/Clip.h \
+    src/scene/Scene.h \
+    src/scene/Camera.h \
+    src/scene/SceneObject.h \
+    src/scene/Scene.h \
+    src/scene/light/ILightSource.h \
+    src/scene/light/PointLight.h \
+    src/scene/light/DirectionalLight.h \
+    src/modelling/Geometry.h \
+    #src/modelling/Sphere.h \
+    #src/modelling/Plane.h \
+    #src/modelling/Cylinder.h \
+    #src/modelling/Tetraeder.h \
+    src/Material.h \
+    demo.h \
     mainwindow.h
 
 FORMS += \
     mainwindow.ui
+
+INCLUDEPATH += \
+    src/
+
+OTHER_FILES += \
+    data/shader/shader.vert \
+    data/shader/shader.frag
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

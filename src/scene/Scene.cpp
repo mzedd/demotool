@@ -1,11 +1,10 @@
 #include "Scene.h"
-#include "../Engine.h"
 
 Scene::Scene() :
-    Scene(glm::vec3(0.0f)) {
+    Scene(QVector3D(0.0f, 0.0f, 0.0f)) {
 }
 
-Scene::Scene(glm::vec3 backgroundColor) :
+Scene::Scene(QVector3D backgroundColor) :
         backgroundColor(backgroundColor) {
     cameraList.push_back(Camera());
     activeCamera = &cameraList[0];
@@ -18,6 +17,7 @@ Scene::~Scene() {
 }
 
 void Scene::render() {
+    /*
     // clear background
     glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -35,7 +35,7 @@ void Scene::render() {
         it->shaderProgram.setMat4("view", activeCamera->getViewMatrix());
         it->shaderProgram.setUniform("camPos", activeCamera->position);
         it->render();
-    }
+    }*/
 }
 
 void Scene::addSceneObject(SceneObject &sceneObject) {
@@ -55,9 +55,9 @@ Camera& Scene::getCamera(int cameraNumber) {
 }
 
 void Scene::setEditorCamera() {
-    activeCamera = &Engine::instance().getCamera();
+    //activeCamera = &Engine::instance().getCamera();
 }
 
-void Scene::setBackgroundColor(const glm::vec3 color) {
+void Scene::setBackgroundColor(QVector3D color) {
     backgroundColor = color;
 }

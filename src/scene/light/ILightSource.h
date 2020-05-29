@@ -1,20 +1,20 @@
 #ifndef ILIGHTSOURCE_H
 #define ILIGHTSOURCE_H
 
-#include <glm/glm.hpp>
-#include "../../ShaderProgram.h"
+#include <QVector3D>
+#include <QOpenGLShaderProgram>
 
 class ILightSource
 {
 protected:
-    glm::vec3 intensity;
+    QVector3D intensity;
 public:
     ILightSource();
-    ILightSource(glm::vec3 intesity);
+    ILightSource(QVector3D intesity);
     virtual ~ILightSource() = default;
-    glm::vec3& getIntensity();
-    void setIntensity(glm::vec3 intensity);
-    virtual void sendToShader(ShaderProgram& shader,int index) = 0;
+    QVector3D& getIntensity();
+    void setIntensity(QVector3D intensity);
+    virtual void sendToShader(QOpenGLShaderProgram& shader,int index) = 0;
 };
 
 #endif // ILIGHTSOURCE_H

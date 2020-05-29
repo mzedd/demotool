@@ -1,21 +1,21 @@
 #ifndef SCENEOBJECT_H
 #define SCENEOBJECT_H
 
-#include "Transform.h"
+#include <QTransform>
+#include <QOpenGLShaderProgram>
+
 #include "../modelling/Geometry.h"
 #include "../Material.h"
-#include "../ShaderProgram.h"
 
 class SceneObject
 {
 private:
     Material material;
-
 public:
-    Transform transform;
+    QTransform transform;
     Geometry& geometry;
-    ShaderProgram& shaderProgram;
-    SceneObject(Geometry& geometry, ShaderProgram& shader);
+    QOpenGLShaderProgram& shaderProgram;
+    SceneObject(Geometry& geometry, QOpenGLShaderProgram& shader);
     void render();
     Material& getMaterial();
     void setMaterial(const Material& material);

@@ -1,19 +1,20 @@
 #ifndef DIRECTIONALLIGHT_H
 #define DIRECTIONALLIGHT_H
 
-#include <glm/glm.hpp>
+#include <QVector3D>
+
 #include "ILightSource.h"
 
 class DirectionalLight : public ILightSource
 {
 private:
-    glm::vec3 direction;
+    QVector3D direction;
 public:
     DirectionalLight();
-    DirectionalLight(glm::vec3 intensity, glm::vec3 direction);
-    glm::vec3& getDirection();
-    void setDirection(glm::vec3 direction);
-    void sendToShader(ShaderProgram &shader, int index);
+    DirectionalLight(QVector3D intensity, QVector3D direction);
+    QVector3D& getDirection();
+    void setDirection(QVector3D direction);
+    void sendToShader(QOpenGLShaderProgram &shader, int index);
 };
 
 #endif // DIRECTIONALLIGHT_H

@@ -1,17 +1,18 @@
 #ifndef POINTLIGHT_H
 #define POINTLIGHT_H
 
-#include <glm/glm.hpp>
+#include <QVector3D>
+
 #include "ILightSource.h"
 
 class PointLight : public ILightSource
 {
 private:
-    glm::vec3 position;
+    QVector3D position;
 public:
     PointLight();
-    PointLight(glm::vec3 intensity, glm::vec3 position);
-    void sendToShader(ShaderProgram &shader, int index);
+    PointLight(QVector3D intensity, QVector3D position);
+    void sendToShader(QOpenGLShaderProgram &shader, int index);
 };
 
 #endif // POINTLIGHT_H

@@ -1,12 +1,11 @@
 #include "Camera.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <QtMath>
 
 Camera::Camera() :
-	position(glm::vec3(0.0f)),
-	front(glm::vec3(0.0f, 0.0f, -1.0f)),
-	up(glm::vec3(0.0f, 1.0f, 0.0f)),
+    position(0.0f, 0.0f, 0.0f),
+    front(QVector3D(0.0f, 0.0f, -1.0f)),
+    up(QVector3D(0.0f, 1.0f, 0.0f)),
 	speed(1.0f),
 	fov(45.0f),
 	yaw(0.0f),
@@ -17,7 +16,7 @@ Camera::Camera() :
 	firstMouse(false) {
 }
 
-Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, float speed) :
+Camera::Camera(QVector3D position, QVector3D front, QVector3D up, float speed) :
 	position(position),
 	front(front),
 	up(up),
@@ -31,16 +30,20 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up, float speed) :
 	firstMouse(false) {
 }
 
-glm::vec3 Camera::getRight() {
-	return glm::normalize(glm::cross(front, up));
+QVector3D Camera::getRight() {
+    QVector3D result = QVector3D::crossProduct(front, up);
+    result.normalize();
+    return result;
 }
 
-glm::vec3 Camera::getUp() {
+QVector3D Camera::getUp() {
     return up;
 }
 
-glm::mat4 Camera::getViewMatrix() {
-	return glm::lookAt(position, position + front, up);
+QMatrix4x4 Camera::getViewMatrix() {
+    QMatrix4x4 result;
+    result.lookAt(position, position + front, up);
+    return result;
 }
 
 void Camera::updateFront(float xpos, float ypos) {
@@ -65,10 +68,10 @@ void Camera::updateFront(float xpos, float ypos) {
 		pitch = -89.0f;
 	}
 
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = -sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front = glm::normalize(front);
+    front.setX(cos(qDegreesToRadians(yaw)) * cos(qDegreesToRadians(pitch)));
+    front.setY(-sin(qDegreesToRadians(pitch)));
+    front.setZ(sin(qDegreesToRadians(yaw)) * cos(qDegreesToRadians(pitch)));
+    front.normalize();
 }
 
 void Camera::addScrollOffset(float offset) {
@@ -82,6 +85,8 @@ void Camera::addScrollOffset(float offset) {
 	}
 }
 
-glm::mat4 Camera::getProjectionMatrix(int width, int height) {
-	return glm::perspective(glm::radians(fov), (float)width / (float)height, 0.1f, 100.0f);
+QMatrix4x4 Camera::getProjectionMatrix(int width, int height) {
+    QMatrix4x4 result;
+    result.perspective(qDegreesToRadians(fov), width/(double)height, 0.1, 100.0f);
+    return result;
 }

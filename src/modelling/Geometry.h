@@ -1,9 +1,13 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
+
 class Geometry {
 protected:
-	unsigned int vao, vbo, ebo;
+    QOpenGLVertexArrayObject vao;
+    QOpenGLBuffer vbo, ebo;
 	unsigned char resolution;
 public:
     Geometry(unsigned char resolution);

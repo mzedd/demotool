@@ -1,21 +1,18 @@
 #ifndef DEMO_H
 #define DEMO_H
 
-#include <vector>
-
-#include "../Engine.h"
-#include "Timeline.h"
-#include "../scene/Scene.h"
+#include <QOpenGLShaderProgram>
+#include "demo/Timeline.h"
+#include "scene/Scene.h"
 
 class Demo
 {
 private:
-    //Engine engine;
     Timeline timeline;
     std::vector<Scene> sceneList;
+    std::vector<QOpenGLShaderProgram> shaderList;
 public:
     Demo();
-    void exportToBinary();
 };
 
 #endif // DEMO_H

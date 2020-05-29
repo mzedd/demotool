@@ -2,6 +2,7 @@
 #define SCENE_H
 
 #include <vector>
+#include <QVector3D>
 
 #include "SceneObject.h"
 #include "Camera.h"
@@ -14,10 +15,10 @@ private:
     std::vector<Camera> cameraList;
     std::vector<ILightSource*> lightSourceList;
     Camera* activeCamera;
-    glm::vec3 backgroundColor;
+    QVector3D backgroundColor;
 public:
     Scene();
-    Scene(glm::vec3 backgroundColor);
+    Scene(QVector3D backgroundColor);
     ~Scene();
     void render();
     void addSceneObject(SceneObject& sceneObject);
@@ -25,7 +26,7 @@ public:
     void addLightSource(ILightSource* lightSource);
     Camera& getCamera(int cameraNumber);
     void setEditorCamera();
-    void setBackgroundColor(glm::vec3 color);
+    void setBackgroundColor(QVector3D color);
 };
 
 #endif // SCENE_H

@@ -1,8 +1,8 @@
 #include "SceneObject.h"
 
-SceneObject::SceneObject(Geometry& geometry, ShaderProgram& shader) :
+SceneObject::SceneObject(Geometry& geometry, QOpenGLShaderProgram& shader) :
     material(Material::standard()),
-    transform(Transform::unit()),
+    transform(),
     geometry(geometry),
     shaderProgram(shader)
 {
@@ -10,9 +10,9 @@ SceneObject::SceneObject(Geometry& geometry, ShaderProgram& shader) :
 }
 
 void SceneObject::render() {
-    shaderProgram.use();
-    shaderProgram.setMat4("model", transform.toMat4());
-    shaderProgram.setUniform("material", material);
+    //shaderProgram.use();
+    //shaderProgram.setMat4("model", transform.toMat4());
+    //shaderProgram.setUniform("material", material);
     geometry.render();
 }
 
