@@ -19,3 +19,11 @@ void Clip::attachCamera(int cameraNumber) {
         std::cout << "Attach a Scene first" << std::endl;
     }
 }
+
+void Clip::setDuration(const float duration) {
+    this->duration = duration;
+}
+
+float Clip::getDuration() {
+    return duration;
+}
