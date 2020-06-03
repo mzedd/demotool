@@ -97,9 +97,6 @@ void OpenGLWindow::paintGL() {
 }
 
 void OpenGLWindow::keyPressEvent(QKeyEvent *event) {
-
-
-
     switch(event->key()) {
         case Qt::Key::Key_W:
         camera.position += camera.front*0.1f;
@@ -113,9 +110,7 @@ void OpenGLWindow::keyPressEvent(QKeyEvent *event) {
     case Qt::Key_D:
         camera.position += camera.getRight()*camera.speed*deltaTime;
         break;
-
     }
-
     update();
 }
 
@@ -123,6 +118,16 @@ void OpenGLWindow::mousePressEvent(QMouseEvent *event) {
     switch(event->button()) {
     case Qt::MouseButton::LeftButton:
         std::cout << "moin" << std::endl;
+        break;
+    default:
+        break;
+    }
+}
+
+void OpenGLWindow::mouseReleaseEvent(QMouseEvent *event) {
+    switch(event->button()) {
+    case Qt::MouseButton::LeftButton:
+        camera.firstMouse = true;
         break;
     default:
         break;

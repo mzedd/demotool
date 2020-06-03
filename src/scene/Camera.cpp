@@ -13,7 +13,7 @@ Camera::Camera() :
 	lastX(0.0f),
 	lastY(0.0f),
 	sensitivity(0.1f),
-	firstMouse(false) {
+    firstMouse(true) {
 }
 
 Camera::Camera(QVector3D position, QVector3D front, QVector3D up, float speed) :
@@ -27,7 +27,7 @@ Camera::Camera(QVector3D position, QVector3D front, QVector3D up, float speed) :
 	lastX(400),
 	lastY(300),
 	sensitivity(0.1f),
-	firstMouse(false) {
+    firstMouse(true) {
 }
 
 QVector3D Camera::getRight() {
@@ -53,8 +53,8 @@ void Camera::updateFront(float xpos, float ypos) {
 		firstMouse = false;
 	}
 
-	float xoffset = xpos - lastX;
-	float yoffset = ypos - lastY;
+    float xoffset = xpos - lastX;
+    float yoffset = ypos - lastY;
 	lastX = xpos;
 	lastY = ypos;
 

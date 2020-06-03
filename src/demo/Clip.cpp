@@ -2,10 +2,12 @@
 
 #include <iostream>
 
-Clip::Clip() :
-    scene(nullptr),
-    camera(nullptr) {
-
+Clip::Clip(QString name)
+    : scene(nullptr),
+      camera(nullptr),
+      duration(0.0f),
+      name(name)
+{
 }
 
 void Clip::attachScene(Scene &scene) {
@@ -26,4 +28,12 @@ void Clip::setDuration(const float duration) {
 
 float Clip::getDuration() {
     return duration;
+}
+
+QString Clip::getName() const {
+    return name;
+}
+
+void Clip::setName(const QString name) {
+    this->name = name;
 }
