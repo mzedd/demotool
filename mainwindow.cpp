@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     ui->tableView->setModel(model);
-    ui->widget->setModel(model);
+    ui->timelineView->setModel(model);
 }
 
 MainWindow::~MainWindow()

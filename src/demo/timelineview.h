@@ -1,6 +1,7 @@
 #ifndef TIMELINEVIEW_H
 #define TIMELINEVIEW_H
 
+#include <QWidget>
 #include <QAbstractItemView>
 
 class TimelineView : public QAbstractItemView
@@ -21,10 +22,13 @@ protected:
     bool isIndexHidden(const QModelIndex &index) const override;
     void setSelection(const QRect &rect, QItemSelectionModel::SelectionFlags command) override;
     QRegion visualRegionForSelection(const QItemSelection &selection) const override;
-private:
-    QModelIndex currentClip;
 
+    void mousePressEvent(QMouseEvent *event) override;
+
+private:
     QRect getClipRectangle(QModelIndex &index);
+    QLineF cursor;
+
 protected slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,
                      const QVector<int> &roles = QVector<int>()) override;

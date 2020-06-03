@@ -3,7 +3,6 @@
 TimelineModel::TimelineModel(QObject *parent)
     : QAbstractTableModel(parent)
 {
-
 }
 
 TimelineModel::~TimelineModel() {
