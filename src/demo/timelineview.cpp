@@ -16,6 +16,8 @@ TimelineView::TimelineView(QWidget *parent)
 
     setDragEnabled(true);
     setDragDropMode(QAbstractItemView::DragOnly);
+
+    zoom = 1.0f;
 }
 
 void TimelineView::paintEvent(QPaintEvent*) {
@@ -30,10 +32,11 @@ void TimelineView::paintEvent(QPaintEvent*) {
     painter.setPen(pen);
 
     // draw vertical lines
-    float y = 80;
+    float y = 0.0f;
     QVector<QLineF> lines;
-    for(int i = 0; i < 5; i++) {
-        y = 80 + i*20;
+    int maxLineCount = (int)(viewport()->height()/CLIP_HEIGHT);
+    for(int i = 0; i < maxLineCount; i++) {
+        y = i*CLIP_HEIGHT + 2.0f;
         lines.append(QLineF(0, y, viewport()->rect().width(), y));
     }
     painter.drawLines(lines);
@@ -74,10 +77,10 @@ QRect TimelineView::visualRect(const QModelIndex &index) const
         }
     }
 
-    clip.setX(offset);
-    clip.setY(10);
+    clip.setX(offset*zoom);
+    clip.setY(0.0f);
     clip.setHeight(50);
-    clip.setWidth(model()->data(model()->index(index.row(), 1), Qt::DisplayRole).toDouble());
+    clip.setWidth(model()->data(model()->index(index.row(), 1), Qt::DisplayRole).toDouble()*zoom);
     return clip;
 }
 
@@ -162,8 +165,9 @@ void TimelineView::mousePressEvent(QMouseEvent *event)
     }
 }
 
-void TimelineView::mouseMoveEvent(QMouseEvent *event)
+void TimelineView::mouseMoveEvent(QMouseEvent* /*event*/)
 {
+    // has to be her to prevent call of mousePressEvent when moving pressed mouse
 }
 
 void TimelineView::mouseReleaseEvent(QMouseEvent *event)
@@ -174,6 +178,13 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
         model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
     }
     setCursor(Qt::OpenHandCursor);
+    viewport()->update();
+}
+
+void TimelineView::wheelEvent(QWheelEvent *event)
+{
+    zoom += 0.001f*event->delta();
+    zoom = qBound(0.5f, zoom, 10.0f);
     viewport()->update();
 }
 

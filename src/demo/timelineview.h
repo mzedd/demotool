@@ -6,6 +6,8 @@
 #include <QContextMenuEvent>
 #include <QGraphicsView>
 
+constexpr float CLIP_HEIGHT = 50.0f;
+
 class TimelineView : public QAbstractItemView
 {
     Q_OBJECT
@@ -28,6 +30,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
     void contextMenuEvent(QContextMenuEvent *event) override;
@@ -36,6 +39,7 @@ private:
     QRect getClipRectangle(QModelIndex &index);
     QLineF cursor;
     QGraphicsView* view;
+    float zoom;
 
 protected slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,
