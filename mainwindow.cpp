@@ -15,12 +15,18 @@ MainWindow::MainWindow(QWidget *parent)
     clip->setDuration(25.0f);
     model->addClip(clip);
     clip = new Clip("moin1");
-    clip->setDuration(1337.0f);
+    clip->setDuration(42.0f);
+    model->addClip(clip);
+    clip = new Clip("Tach");
+    clip->setDuration(53.0f);
     model->addClip(clip);
 
 
     ui->tableView->setModel(model);
     ui->timelineView->setModel(model);
+
+    connect(ui->pb_addClip, SIGNAL(clicked()), ui->timelineView, SLOT(addClip()));
+    connect(ui->pb_deleteClip, SIGNAL(clicked()), ui->timelineView, SLOT(removeClip()));
 }
 
 MainWindow::~MainWindow()

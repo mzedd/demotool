@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QAbstractItemView>
+#include <QContextMenuEvent>
+#include <QGraphicsView>
 
 class TimelineView : public QAbstractItemView
 {
@@ -24,14 +26,23 @@ protected:
     QRegion visualRegionForSelection(const QItemSelection &selection) const override;
 
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+
+    void contextMenuEvent(QContextMenuEvent *event) override;
 
 private:
     QRect getClipRectangle(QModelIndex &index);
     QLineF cursor;
+    QGraphicsView* view;
 
 protected slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,
                      const QVector<int> &roles = QVector<int>()) override;
+public slots:
+    void addClip();
+    void removeClip();
 
 };
 

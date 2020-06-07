@@ -2,6 +2,12 @@
 
 #include <iostream>
 
+Clip::Clip()
+    : Clip("clip")
+{
+    duration = 10.0f;
+}
+
 Clip::Clip(QString name)
     : scene(nullptr),
       camera(nullptr),

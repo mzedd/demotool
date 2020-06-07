@@ -3,6 +3,8 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QDebug>
+#include <QMenu>
+#include <QDrag>
 
 TimelineView::TimelineView(QWidget *parent)
     : QAbstractItemView(parent)
@@ -11,6 +13,9 @@ TimelineView::TimelineView(QWidget *parent)
 
     setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectItems);
+
+    setDragEnabled(true);
+    setDragDropMode(QAbstractItemView::DragOnly);
 }
 
 void TimelineView::paintEvent(QPaintEvent*) {
@@ -59,17 +64,21 @@ void TimelineView::paintEvent(QPaintEvent*) {
 QRect TimelineView::visualRect(const QModelIndex &index) const
 {
     QRect clip = QRect();
-    if(index.row() > 0) {
-        QModelIndex newIndex = model()->index(index.row()-1, 1);
-        clip.setX(model()->data(newIndex, Qt::DisplayRole).toDouble()+10);
-    } else {
-        clip.setX(0);
+
+    float offset = 0.0f;
+    for(int i = 0; i < model()->rowCount(); i++) {
+        if(index.row() == i) {
+            break;
+        } else {
+            offset += model()->data(model()->index(i, 1), Qt::DisplayRole).toFloat();
+        }
     }
+
+    clip.setX(offset);
     clip.setY(10);
     clip.setHeight(50);
     clip.setWidth(model()->data(model()->index(index.row(), 1), Qt::DisplayRole).toDouble());
     return clip;
-
 }
 
 void TimelineView::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint)
@@ -91,7 +100,7 @@ QModelIndex TimelineView::indexAt(const QPoint &point) const
     return QModelIndex();
 }
 
-QModelIndex TimelineView::moveCursor(QAbstractItemView::CursorAction cursorAction, Qt::KeyboardModifiers modifiers)
+QModelIndex TimelineView::moveCursor(QAbstractItemView::CursorAction cursorAction, Qt::KeyboardModifiers /*modifiers*/)
 {
     QModelIndex current = currentIndex();
     QModelIndex tmp;
@@ -141,8 +150,11 @@ QRegion TimelineView::visualRegionForSelection(const QItemSelection& /*selection
 
 void TimelineView::mousePressEvent(QMouseEvent *event)
 {
+    setCursor(Qt::ClosedHandCursor);
+    QModelIndex index = indexAt(event->pos());
     switch(event->button()) {
     case Qt::LeftButton:
+        setCurrentIndex(index);
         viewport()->update();
         break;
     default:
@@ -150,7 +162,57 @@ void TimelineView::mousePressEvent(QMouseEvent *event)
     }
 }
 
+void TimelineView::mouseMoveEvent(QMouseEvent *event)
+{
+}
+
+void TimelineView::mouseReleaseEvent(QMouseEvent *event)
+{
+    QModelIndex index = indexAt(event->pos());
+
+    if(index != currentIndex()) {
+        model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
+    }
+    setCursor(Qt::OpenHandCursor);
+    viewport()->update();
+}
+
+void TimelineView::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Delete:
+        model()->removeRow(currentIndex().row());
+        viewport()->update();
+        break;
+    case Qt::Key_Left:
+        if(event->modifiers().testFlag(Qt::ShiftModifier) && currentIndex().isValid()) {
+        }
+    }
+}
+
+void TimelineView::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu(this);
+    menu.addAction("Add Scene");
+}
+
 void TimelineView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     viewport()->update();
+}
+
+void TimelineView::addClip()
+{
+    model()->insertRow(model()->rowCount());
+    viewport()->update();
+}
+
+void TimelineView::removeClip()
+{
+    if(currentIndex().isValid()) {
+        if(!model()->removeRow(currentIndex().row())) {
+            setCurrentIndex(QModelIndex());
+        }
+        viewport()->update();
+    }
 }

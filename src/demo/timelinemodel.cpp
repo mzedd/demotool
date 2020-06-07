@@ -1,7 +1,7 @@
 #include "timelinemodel.h"
 
 TimelineModel::TimelineModel(QObject *parent)
-    : QAbstractTableModel(parent)
+    : QAbstractListModel(parent)
 {
 }
 
@@ -43,6 +43,50 @@ void TimelineModel::addClip(Clip *clip) {
     clipList.append(clip);
 }
 
+Qt::DropActions TimelineModel::supportedDropActions() const
+{
+    return Qt::MoveAction;
+}
+
+bool TimelineModel::swapRows(int i, int j)
+{
+    Clip *tmp;
+
+    if(i >= 0 && i < clipList.size() && j >= 0 && j < clipList.size()) {
+        tmp = clipList[i];
+        clipList[i] = clipList[j];
+        clipList[j] = tmp;
+        return true;
+    }
+
+    return false;
+}
+
+bool TimelineModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    for(int i = 0; i < count; i++) {
+        clipList.append(new Clip());
+    }
+    return true;
+}
+
+bool TimelineModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if(!clipList.empty() && row+count <= clipList.size()) {
+        for(int i = 0; i < count; i++) {
+            delete clipList[row+i];
+        }
+        clipList.remove(row, count);
+        return true;
+    }
+    return false;
+}
+
+bool TimelineModel::moveRows(const QModelIndex &sourceParent, int sourceRow, int count, const QModelIndex &destinationParent, int destinationChild)
+{
+    return swapRows(sourceRow, destinationChild);
+}
+
 bool TimelineModel::setData(const QModelIndex &index, const QVariant &value, int role) {
     if(role == Qt::EditRole) {
         switch(index.column()) {
@@ -62,5 +106,5 @@ bool TimelineModel::setData(const QModelIndex &index, const QVariant &value, int
 
 Qt::ItemFlags TimelineModel::flags(const QModelIndex &index) const
 {
-    return Qt::ItemIsEditable | QAbstractTableModel::flags(index);
+    return Qt::ItemIsEditable | QAbstractListModel::flags(index);
 }

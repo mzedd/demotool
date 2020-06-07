@@ -14,6 +14,7 @@ private:
     float duration;
     QString name;
 public:
+    Clip();
     Clip(QString name);
     void attachScene(Scene& scene);
     void attachCamera(int cameraNumber);
