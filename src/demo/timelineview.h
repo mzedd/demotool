@@ -5,8 +5,9 @@
 #include <QAbstractItemView>
 #include <QContextMenuEvent>
 #include <QGraphicsView>
+#include <QEvent>
 
-constexpr float CLIP_HEIGHT = 50.0f;
+#include "timelinecursor.h"
 
 class TimelineView : public QAbstractItemView
 {
@@ -37,9 +38,22 @@ protected:
 
 private:
     QRect getClipRectangle(QModelIndex &index);
-    QLineF cursor;
-    QGraphicsView* view;
+    QRect *cursor;
+
+    QGraphicsView *view;
+    QGraphicsScene* scene;
+
     float zoom;
+
+    enum DragState {
+        none,
+        cursorDrag
+    };
+
+    DragState dragState;
+
+signals:
+    void zoomChanged(QString text);
 
 protected slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,

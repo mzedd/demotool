@@ -16,12 +16,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ClipArrangement.cpp \
     openglwindow.cpp \
     #src/demo/Timeline.cpp \
     src/demo/Clip.cpp \
     src/demo/timelineitem.cpp \
     src/demo/timelinemodel.cpp \
     src/demo/timelineview.cpp \
+    src/demo/timelinecursor.cpp \
     src/scene/Scene.cpp \
     src/scene/Camera.cpp \
     src/scene/SceneObject.cpp \
@@ -39,12 +41,14 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    ClipArrangement.h \
     openglwindow.h \
     #src/demo/Timeline.h \
     src/demo/Clip.h \
     src/demo/timelineitem.h \
     src/demo/timelinemodel.h \
     src/demo/timelineview.h \
+    src/demo/timelinecursor.h \
     src/scene/Scene.h \
     src/scene/Camera.h \
     src/scene/SceneObject.h \
@@ -62,6 +66,7 @@ HEADERS += \
     mainwindow.h
 
 FORMS += \
+    cliparrangement.ui \
     mainwindow.ui
 
 INCLUDEPATH += \

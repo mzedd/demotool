@@ -5,38 +5,68 @@
 #include <QDebug>
 #include <QMenu>
 #include <QDrag>
+#include <QRubberBand>
+#include <QHBoxLayout>
+
+constexpr int PIXELS_PER_SECOND = 10;
+constexpr int TIMEAXIS_HEIGHT = 30;
+constexpr int TIMEAXIS_TICK_PER_SECOND = 1;
+constexpr float CLIP_HEIGHT = 50.0f;
+constexpr float SCROLL_TO_ZOOM_SCALE = 0.001f;
+constexpr float MIN_ZOOM = 0.5f;
+constexpr float MAX_ZOOM = 10.0f;
 
 TimelineView::TimelineView(QWidget *parent)
     : QAbstractItemView(parent)
 {
-    cursor.setLine(100, this->y(), 100, this->height()+200);
-
     setSelectionMode(QAbstractItemView::SelectionMode::SingleSelection);
     setSelectionBehavior(QAbstractItemView::SelectionBehavior::SelectItems);
 
-    setDragEnabled(true);
-    setDragDropMode(QAbstractItemView::DragOnly);
-
     zoom = 1.0f;
+
+    cursor = new QRect(20, 0, 3, 300);
+
+    dragState = DragState::none;
+
+    setMouseTracking(true);
 }
 
 void TimelineView::paintEvent(QPaintEvent*) {
     QPainter painter(this->viewport());
-    painter.setBrush(Qt::red);
+    painter.setBrush(Qt::white);
     painter.drawRect(viewport()->rect());
 
     QPen pen;
     pen.setColor(Qt::black);
     pen.setStyle(Qt::PenStyle::SolidLine);
-    pen.setWidth(2);
+    pen.setWidth(1);
     painter.setPen(pen);
+
+    // time axis
+    int maxTickCount = viewport()->width()/PIXELS_PER_SECOND;
+    QLine bigTick = QLine(0, 0, 0, TIMEAXIS_HEIGHT);
+
+    qDebug() << "MaxTickCount: " << maxTickCount;
+
+    for(int x = 0; x < maxTickCount; x++) {
+        bigTick.translate(PIXELS_PER_SECOND*zoom,0);
+
+        if(x % 10) {
+            pen.setWidth(1);
+        } else {
+            pen.setWidth(2);
+        }
+        painter.setPen(pen);
+        painter.drawLine(bigTick);
+    }
+
 
     // draw vertical lines
     float y = 0.0f;
     QVector<QLineF> lines;
     int maxLineCount = (int)(viewport()->height()/CLIP_HEIGHT);
     for(int i = 0; i < maxLineCount; i++) {
-        y = i*CLIP_HEIGHT + 2.0f;
+        y = i*CLIP_HEIGHT + 2.0f + TIMEAXIS_HEIGHT;
         lines.append(QLineF(0, y, viewport()->rect().width(), y));
     }
     painter.drawLines(lines);
@@ -55,13 +85,16 @@ void TimelineView::paintEvent(QPaintEvent*) {
         }
 
         clip = visualRect(index);
+        clip.translate(0, TIMEAXIS_HEIGHT);
         painter.drawRect(clip);
+
+        painter.drawText(clip.topLeft()+QPoint(0,10), model()->data(index).toString());
     }
 
-    qDebug() << currentIndex().row();
-
     // draw cursor
-    painter.drawLine(cursor);
+    painter.drawRect(*cursor);
+
+    qDebug() << currentIndex().row();
 }
 
 QRect TimelineView::visualRect(const QModelIndex &index) const
@@ -157,17 +190,39 @@ void TimelineView::mousePressEvent(QMouseEvent *event)
     QModelIndex index = indexAt(event->pos());
     switch(event->button()) {
     case Qt::LeftButton:
-        setCurrentIndex(index);
-        viewport()->update();
+        if(cursor->contains(event->pos())) {
+            dragState = DragState::cursorDrag;
+        } else {
+            setCurrentIndex(index);
+            viewport()->update();
+        }
         break;
     default:
         break;
     }
+
+    QAbstractItemView::mousePressEvent(event);
 }
 
-void TimelineView::mouseMoveEvent(QMouseEvent* /*event*/)
+void TimelineView::mouseMoveEvent(QMouseEvent* event)
 {
-    // has to be her to prevent call of mousePressEvent when moving pressed mouse
+    QPoint p = event->pos();
+
+    if(cursor->contains(p)) {
+        setCursor(Qt::SizeHorCursor);
+    } else {
+        setCursor(Qt::ArrowCursor);
+    }
+
+    switch(dragState) {
+    case none:
+        break;
+    case cursorDrag:
+        cursor->setX(p.x());
+        cursor->setWidth(3);
+        viewport()->update();
+        break;
+    }
 }
 
 void TimelineView::mouseReleaseEvent(QMouseEvent *event)
@@ -177,15 +232,26 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
     if(index != currentIndex()) {
         model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
     }
-    setCursor(Qt::OpenHandCursor);
+
+    switch(dragState) {
+    case none:
+        break;
+    case cursorDrag:
+        dragState = DragState::none;
+        break;
+    }
+
+    setCursor(Qt::ArrowCursor);
     viewport()->update();
 }
 
 void TimelineView::wheelEvent(QWheelEvent *event)
 {
-    zoom += 0.001f*event->delta();
-    zoom = qBound(0.5f, zoom, 10.0f);
+    zoom += SCROLL_TO_ZOOM_SCALE*event->delta();
+    zoom = qBound(MIN_ZOOM, zoom, MAX_ZOOM);
     viewport()->update();
+    emit zoomChanged(QString("Zoom: %1 \%").arg((int)(zoom*100.0f),3));
+    QAbstractItemView::wheelEvent(event);
 }
 
 void TimelineView::keyPressEvent(QKeyEvent *event)
