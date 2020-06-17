@@ -15,6 +15,7 @@ constexpr float CLIP_HEIGHT = 50.0f;
 constexpr float SCROLL_TO_ZOOM_SCALE = 0.001f;
 constexpr float MIN_ZOOM = 0.5f;
 constexpr float MAX_ZOOM = 10.0f;
+constexpr int CURSOR_WIDTH = 2;
 
 TimelineView::TimelineView(QWidget *parent)
     : QAbstractItemView(parent)
@@ -33,8 +34,6 @@ TimelineView::TimelineView(QWidget *parent)
 
 void TimelineView::paintEvent(QPaintEvent*) {
     QPainter painter(this->viewport());
-    painter.setBrush(Qt::white);
-    painter.drawRect(viewport()->rect());
 
     QPen pen;
     pen.setColor(Qt::black);
@@ -43,10 +42,8 @@ void TimelineView::paintEvent(QPaintEvent*) {
     painter.setPen(pen);
 
     // time axis
-    int maxTickCount = viewport()->width()/PIXELS_PER_SECOND;
+    int maxTickCount = width()/(PIXELS_PER_SECOND*zoom);
     QLine bigTick = QLine(0, 0, 0, TIMEAXIS_HEIGHT);
-
-    qDebug() << "MaxTickCount: " << maxTickCount;
 
     for(int x = 0; x < maxTickCount; x++) {
         bigTick.translate(PIXELS_PER_SECOND*zoom,0);
@@ -64,10 +61,10 @@ void TimelineView::paintEvent(QPaintEvent*) {
     // draw vertical lines
     float y = 0.0f;
     QVector<QLineF> lines;
-    int maxLineCount = (int)(viewport()->height()/CLIP_HEIGHT);
+    int maxLineCount = (int)(height()/CLIP_HEIGHT);
     for(int i = 0; i < maxLineCount; i++) {
         y = i*CLIP_HEIGHT + 2.0f + TIMEAXIS_HEIGHT;
-        lines.append(QLineF(0, y, viewport()->rect().width(), y));
+        lines.append(QLineF(0, y, width(), y));
     }
     painter.drawLines(lines);
 
@@ -85,7 +82,6 @@ void TimelineView::paintEvent(QPaintEvent*) {
         }
 
         clip = visualRect(index);
-        clip.translate(0, TIMEAXIS_HEIGHT);
         painter.drawRect(clip);
 
         painter.drawText(clip.topLeft()+QPoint(0,10), model()->data(index).toString());
@@ -93,8 +89,6 @@ void TimelineView::paintEvent(QPaintEvent*) {
 
     // draw cursor
     painter.drawRect(*cursor);
-
-    qDebug() << currentIndex().row();
 }
 
 QRect TimelineView::visualRect(const QModelIndex &index) const
@@ -111,7 +105,7 @@ QRect TimelineView::visualRect(const QModelIndex &index) const
     }
 
     clip.setX(offset*zoom);
-    clip.setY(0.0f);
+    clip.setY(TIMEAXIS_HEIGHT);
     clip.setHeight(50);
     clip.setWidth(model()->data(model()->index(index.row(), 1), Qt::DisplayRole).toDouble()*zoom);
     return clip;
@@ -180,20 +174,28 @@ void TimelineView::setSelection(const QRect &rect, QItemSelectionModel::Selectio
 
 QRegion TimelineView::visualRegionForSelection(const QItemSelection& /*selection*/) const
 {
-    return QRegion(viewport()->rect()); //TODO: optimieren
+    return QRegion(rect()); //TODO: optimieren
     //return QRegion(0,0,0,0);
 }
 
 void TimelineView::mousePressEvent(QMouseEvent *event)
 {
-    setCursor(Qt::ClosedHandCursor);
     QModelIndex index = indexAt(event->pos());
     switch(event->button()) {
-    case Qt::LeftButton:
+        case Qt::LeftButton:
+        // first check for cursor selection
         if(cursor->contains(event->pos())) {
             dragState = DragState::cursorDrag;
+        } else if(event->pos().y() <= TIMEAXIS_HEIGHT) {
+            qDebug() << "scrubb";
+            setCursorPosition(event->pos().x());
+            viewport()->update();
         } else {
+            qDebug() << "select";
             setCurrentIndex(index);
+            if(index.isValid()) {
+                setCursor(Qt::ClosedHandCursor);
+            }
             viewport()->update();
         }
         break;
@@ -208,17 +210,16 @@ void TimelineView::mouseMoveEvent(QMouseEvent* event)
 {
     QPoint p = event->pos();
 
-    if(cursor->contains(p)) {
-        setCursor(Qt::SizeHorCursor);
-    } else {
-        setCursor(Qt::ArrowCursor);
-    }
-
     switch(dragState) {
     case none:
+        if(cursor->contains(p)) {
+            setCursor(Qt::SizeHorCursor);
+        } else {
+            setCursor(Qt::ArrowCursor);
+        }
         break;
     case cursorDrag:
-        setCursorPosition(pos().x());
+        setCursorPosition(p.x());
         viewport()->update();
         break;
     }
@@ -226,22 +227,29 @@ void TimelineView::mouseMoveEvent(QMouseEvent* event)
 
 void TimelineView::mouseReleaseEvent(QMouseEvent *event)
 {
-    QModelIndex index = indexAt(event->pos());
+    switch(event->button()) {
+    case Qt::LeftButton:
+        if(event->pos().y() > TIMEAXIS_HEIGHT) {
+            QModelIndex index = indexAt(event->pos());
+            if(index != currentIndex()) {
+                model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
+            }
+            setCursor(Qt::ArrowCursor);
+            viewport()->update();
+        }
 
-    if(index != currentIndex()) {
-        model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
-    }
-
-    switch(dragState) {
-    case none:
+        switch(dragState) {
+        case none:
+            break;
+        case cursorDrag:
+            dragState = DragState::none;
+            setCursorPosition(Qt::ArrowCursor);
+            break;
+        }
         break;
-    case cursorDrag:
-        dragState = DragState::none;
+    default:
         break;
     }
-
-    setCursor(Qt::ArrowCursor);
-    viewport()->update();
 }
 
 void TimelineView::wheelEvent(QWheelEvent *event)
@@ -274,8 +282,8 @@ void TimelineView::contextMenuEvent(QContextMenuEvent *event)
 
 void TimelineView::setCursorPosition(const int position)
 {
-    cursor->setX(qBound(0, position, 200));
-    cursor->setWidth(3);
+    cursor->setX(qBound(0, position, width()-CURSOR_WIDTH));
+    cursor->setWidth(CURSOR_WIDTH);
 }
 
 void TimelineView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
