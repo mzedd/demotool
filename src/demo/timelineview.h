@@ -52,6 +52,7 @@ private:
 
 signals:
     void zoomChanged(QString text);
+    void clipSelectionChanged();
 
 protected slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,

@@ -20,6 +20,9 @@ public:
 private:
     Ui::ClipArrangement *ui;
     TimelineModel *model;
+
+private slots:
+    void updateInspector();
 };
 
 #endif // CLIPARRANGEMENT_H

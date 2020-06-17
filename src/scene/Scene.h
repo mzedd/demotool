@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <QVector3D>
+#include <QString>
 
 #include "SceneObject.h"
 #include "Camera.h"
@@ -27,6 +28,8 @@ public:
     Camera& getCamera(int cameraNumber);
     void setEditorCamera();
     void setBackgroundColor(QVector3D color);
+
+    QString name;
 };
 
 #endif // SCENE_H

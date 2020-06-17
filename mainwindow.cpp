@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setFont(QFont("Fira Mono"));
 }
 
 MainWindow::~MainWindow()

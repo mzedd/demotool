@@ -40,6 +40,13 @@ QString Clip::getName() const {
     return name;
 }
 
+Scene &Clip::getScene() const
+{
+    if(scene) {
+        return *scene;
+    }
+}
+
 void Clip::setName(const QString name) {
     this->name = name;
 }

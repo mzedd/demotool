@@ -21,6 +21,7 @@ public:
     void setDuration(const float duration);
     float getDuration();
     QString getName() const;
+    Scene& getScene() const;
     void setName(const QString name);
 };
 

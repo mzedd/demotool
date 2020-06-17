@@ -33,6 +33,9 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
         case 1:
             return QVariant(clipList[index.row()]->getDuration());
             break;
+        case 2:
+            return QVariant(clipList[index.row()]->getScene().name);
+            break;
         }
         break;
     }

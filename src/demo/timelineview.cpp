@@ -195,6 +195,7 @@ void TimelineView::mousePressEvent(QMouseEvent *event)
             setCurrentIndex(index);
             if(index.isValid()) {
                 setCursor(Qt::ClosedHandCursor);
+                emit clipSelectionChanged();
             }
             viewport()->update();
         }
