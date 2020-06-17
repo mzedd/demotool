@@ -218,8 +218,7 @@ void TimelineView::mouseMoveEvent(QMouseEvent* event)
     case none:
         break;
     case cursorDrag:
-        cursor->setX(p.x());
-        cursor->setWidth(3);
+        setCursorPosition(pos().x());
         viewport()->update();
         break;
     }
@@ -271,6 +270,12 @@ void TimelineView::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
     menu.addAction("Add Scene");
+}
+
+void TimelineView::setCursorPosition(const int position)
+{
+    cursor->setX(qBound(0, position, 200));
+    cursor->setWidth(3);
 }
 
 void TimelineView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)

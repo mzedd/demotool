@@ -23,7 +23,6 @@ SOURCES += \
     src/demo/timelineitem.cpp \
     src/demo/timelinemodel.cpp \
     src/demo/timelineview.cpp \
-    src/demo/timelinecursor.cpp \
     src/scene/Scene.cpp \
     src/scene/Camera.cpp \
     src/scene/SceneObject.cpp \
@@ -48,7 +47,6 @@ HEADERS += \
     src/demo/timelineitem.h \
     src/demo/timelinemodel.h \
     src/demo/timelineview.h \
-    src/demo/timelinecursor.h \
     src/scene/Scene.h \
     src/scene/Camera.h \
     src/scene/SceneObject.h \

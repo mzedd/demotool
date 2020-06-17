@@ -7,8 +7,6 @@
 #include <QGraphicsView>
 #include <QEvent>
 
-#include "timelinecursor.h"
-
 class TimelineView : public QAbstractItemView
 {
     Q_OBJECT
@@ -40,10 +38,10 @@ private:
     QRect getClipRectangle(QModelIndex &index);
     QRect *cursor;
 
-    QGraphicsView *view;
-    QGraphicsScene* scene;
+    void setCursorPosition(const int position);
 
     float zoom;
+    float time;
 
     enum DragState {
         none,
