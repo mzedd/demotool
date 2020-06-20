@@ -15,21 +15,25 @@ ClipArrangement::ClipArrangement(QWidget *parent) :
 
     model = new TimelineModel();
 
+
+    // memory leaks
     Scene *s = new Scene();
     s->name = QString("erste Scene");
     Clip *clip = new Clip("clip1");
     clip->setDuration(25.0f);
-    clip->attachScene(*s);
+    clip->attachScene(s);
     model->addClip(clip);
     clip = new Clip("moin1");
     clip->setDuration(42.0f);
+    s = new Scene();
     s->name = QString("zweite Scene");
-    clip->attachScene(*s);
+    clip->attachScene(s);
     model->addClip(clip);
     clip = new Clip("Tach");
     clip->setDuration(53.0f);
+    s = new Scene();
     s->name = QString("dritte Scene");
-    clip->attachScene(*s);
+    clip->attachScene(s);
     model->addClip(clip);
 
     ui->timelineView->setModel(model);
@@ -49,5 +53,6 @@ void ClipArrangement::updateInspector()
     ui->le_clip_name->setText(model->data(index).toString());
 
     QModelIndex sceneIndex = model->index(ui->timelineView->currentIndex().row(), 2);
+    ui->cb_sceneSelector->clear();
     ui->cb_sceneSelector->addItem(model->data(sceneIndex).toString());
 }

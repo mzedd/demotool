@@ -18,7 +18,7 @@ int TimelineModel::rowCount(const QModelIndex&) const
 
 int TimelineModel::columnCount(const QModelIndex&) const
 {
-    return 2;
+    return 3;
 }
 
 QVariant TimelineModel::data(const QModelIndex &index, int role) const
@@ -34,7 +34,10 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
             return QVariant(clipList[index.row()]->getDuration());
             break;
         case 2:
-            return QVariant(clipList[index.row()]->getScene().name);
+            if(clipList[index.row()]->getScene() != nullptr) {
+                return clipList[index.row()]->getScene()->name;
+            }
+            return QVariant(QString());
             break;
         }
         break;

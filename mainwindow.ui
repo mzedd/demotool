@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_5">
     <item>
-     <widget class="ClipArrangement" name="widget" native="true"/>
+     <widget class="ClipArrangement" name="clipArrangement" native="true"/>
     </item>
    </layout>
   </widget>

@@ -13,8 +13,8 @@ public:
     Plane();
     Plane(unsigned char resolution, float width, float height);
 
-    void generate();
-    void render();
+    void generate() override;
+    void render() override;
 };
 
 #endif // PLANE_H

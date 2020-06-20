@@ -2,6 +2,8 @@
 
 #include <QOpenGLShader>
 #include <iostream>
+#include "src/scene/SceneObject.h"
+#include "src/modelling/Plane.h"
 
 #include <QtMath>
 
@@ -10,8 +12,7 @@ OpenGLWindow::OpenGLWindow(QWidget *parent) :
     camera(QVector3D(0.0, 0.0, 5.0), QVector3D(0.0, 0.0, -1.0), QVector3D(0.0, 1.0, 0.0), 1.0),
     vao(0),
     vbo(QOpenGLBuffer(QOpenGLBuffer::Type::VertexBuffer)),
-    ebo(QOpenGLBuffer(QOpenGLBuffer::Type::IndexBuffer)),
-    program(0)
+    ebo(QOpenGLBuffer(QOpenGLBuffer::Type::IndexBuffer))
 {
     setFocusPolicy(Qt::StrongFocus);
     timer.start();
@@ -26,9 +27,12 @@ OpenGLWindow::~OpenGLWindow() {
 }
 
 void OpenGLWindow::initializeGL() {
+    makeCurrent();
+
     initializeOpenGLFunctions();
 
     glEnable(GL_DEPTH_TEST);
+
 
     vao.create();
     vbo.create();
@@ -61,14 +65,24 @@ void OpenGLWindow::initializeGL() {
 
     QString file("data/shader/shader.vert");
     vertShader.compileSourceFile(file);
-    file = QString("data/shader/shader.frag");
+    file = QString("data/shader/PBRShader.frag");
     fragShader.compileSourceFile(file);
 
-    program = new QOpenGLShaderProgram();
-    program->addShader(&vertShader);
-    program->addShader(&fragShader);
-    program->link();
 
+    int id = Demo::instance().addShader();
+    QOpenGLShaderProgram &program = Demo::instance().getShaderPointer(id);
+
+    program.addShader(&vertShader);
+    program.addShader(&fragShader);
+    program.link();
+
+    Scene &scene = Demo::instance().addScene();
+
+    scene.addSceneObject(new SceneObject(new Plane(1, 1.0f, 1.0f), &program));
+    scene.getSceneObject(0).transform.rotate(3.1415/4.0f, Qt::XAxis);
+
+
+    currentScene = Demo::instance().getScenePointer(0);
 }
 
 void OpenGLWindow::resizeGL(int w, int h) {
@@ -87,13 +101,16 @@ void OpenGLWindow::paintGL() {
 
     view = camera.getViewMatrix();
 
-    program->bind();
+    /*program->bind();
     program->setUniformValue(program->uniformLocation("model"), QMatrix4x4());
     program->setUniformValue(program->uniformLocation("view"), view);
-    program->setUniformValue(program->uniformLocation("projection"), projection);
+    program->setUniformValue(program->uniformLocation("projection"), projection);*/
 
+    vao.bind();
+    vbo.bind();
     glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 
+    currentScene->render();
 }
 
 void OpenGLWindow::keyPressEvent(QKeyEvent *event) {

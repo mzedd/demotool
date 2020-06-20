@@ -12,17 +12,17 @@
 #include <QTime>
 
 #include "scene/Camera.h"
-
+#include "demo.h"
 
 class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
 {
 private:
+    Scene *currentScene;
+
     Camera camera;
     QOpenGLVertexArrayObject vao;
     QOpenGLBuffer vbo;
     QOpenGLBuffer ebo;
-
-    QOpenGLShaderProgram *program;
 
     QMatrix4x4 view;
     QMatrix4x4 projection;

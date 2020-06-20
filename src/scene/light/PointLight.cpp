@@ -21,3 +21,8 @@ void PointLight::sendToShader(QOpenGLShaderProgram &shader, int index) {
     //shader.setUniform(name + "position", position);
     //shader.setUniform(name + "direction", QVector3D(0.0f, 0.0f, 0.0f));
 }
+
+QVector3D PointLight::getPosition()
+{
+    return position;
+}

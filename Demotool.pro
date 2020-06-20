@@ -31,7 +31,7 @@ SOURCES += \
     src/scene/light/DirectionalLight.cpp \
     src/modelling/Geometry.cpp \
     #src/modelling/Sphere.cpp \
-    #src/modelling/Plane.cpp \
+    src/modelling/Plane.cpp \
     #src/modelling/Cylinder.cpp \
     #src/modelling/Tetraeder.cpp \
     src/Material.cpp \
@@ -56,7 +56,7 @@ HEADERS += \
     src/scene/light/DirectionalLight.h \
     src/modelling/Geometry.h \
     #src/modelling/Sphere.h \
-    #src/modelling/Plane.h \
+    src/modelling/Plane.h \
     #src/modelling/Cylinder.h \
     #src/modelling/Tetraeder.h \
     src/Material.h \
@@ -72,7 +72,8 @@ INCLUDEPATH += \
 
 OTHER_FILES += \
     data/shader/shader.vert \
-    data/shader/shader.frag
+    data/shader/shader.frag \
+    data/shader/PBRShader.frag
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

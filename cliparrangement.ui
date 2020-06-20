@@ -17,7 +17,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QOpenGLWidget" name="openGLWidget">
+      <widget class="OpenGLWindow" name="openGLWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -173,6 +173,11 @@
    <extends>QWidget</extends>
    <header>src/demo/timelineview.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OpenGLWindow</class>
+   <extends>QOpenGLWidget</extends>
+   <header>openglwindow.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -13,9 +13,10 @@ private:
     Material material;
 public:
     QTransform transform;
-    Geometry& geometry;
-    QOpenGLShaderProgram& shaderProgram;
-    SceneObject(Geometry& geometry, QOpenGLShaderProgram& shader);
+    Geometry *geometry;
+    QOpenGLShaderProgram *shaderProgram;
+    SceneObject(Geometry *geometry, QOpenGLShaderProgram* shader);
+    ~SceneObject();
     void render();
     Material& getMaterial();
     void setMaterial(const Material& material);

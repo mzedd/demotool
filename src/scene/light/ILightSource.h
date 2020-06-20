@@ -14,6 +14,7 @@ public:
     virtual ~ILightSource() = default;
     QVector3D& getIntensity();
     void setIntensity(QVector3D intensity);
+    virtual QVector3D getPosition() = 0;
     virtual void sendToShader(QOpenGLShaderProgram& shader,int index) = 0;
 };
 

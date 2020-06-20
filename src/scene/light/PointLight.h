@@ -12,7 +12,8 @@ private:
 public:
     PointLight();
     PointLight(QVector3D intensity, QVector3D position);
-    void sendToShader(QOpenGLShaderProgram &shader, int index);
+    void sendToShader(QOpenGLShaderProgram &shader, int index) override;
+    QVector3D getPosition() override;
 };
 
 #endif // POINTLIGHT_H

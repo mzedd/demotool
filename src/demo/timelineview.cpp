@@ -105,7 +105,7 @@ QRect TimelineView::visualRect(const QModelIndex &index) const
     }
 
     clip.setX(offset*zoom);
-    clip.setY(TIMEAXIS_HEIGHT);
+    clip.setY(TIMEAXIS_HEIGHT+2);
     clip.setHeight(50);
     clip.setWidth(model()->data(model()->index(index.row(), 1), Qt::DisplayRole).toDouble()*zoom);
     return clip;
@@ -234,6 +234,7 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
             QModelIndex index = indexAt(event->pos());
             if(index != currentIndex()) {
                 model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
+                emit clipSelectionChanged();
             }
             setCursor(Qt::ArrowCursor);
             viewport()->update();
@@ -244,7 +245,7 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
             break;
         case cursorDrag:
             dragState = DragState::none;
-            setCursorPosition(Qt::ArrowCursor);
+            setCursorPosition(event->x());
             break;
         }
         break;
@@ -273,12 +274,16 @@ void TimelineView::keyPressEvent(QKeyEvent *event)
         if(event->modifiers().testFlag(Qt::ShiftModifier) && currentIndex().isValid()) {
         }
     }
+
+    QAbstractItemView::keyPressEvent(event);
 }
 
 void TimelineView::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
     menu.addAction("Add Scene");
+
+    menu.show();
 }
 
 void TimelineView::setCursorPosition(const int position)

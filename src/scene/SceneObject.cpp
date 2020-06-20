@@ -1,19 +1,45 @@
 #include "SceneObject.h"
 
-SceneObject::SceneObject(Geometry& geometry, QOpenGLShaderProgram& shader) :
+SceneObject::SceneObject(Geometry *geometry, QOpenGLShaderProgram *shader) :
     material(Material::standard()),
     transform(),
     geometry(geometry),
     shaderProgram(shader)
 {
-    geometry.generate();
+    geometry->generate();
+}
+
+SceneObject::~SceneObject()
+{
+    /*if(geometry) {
+        delete geometry;
+    }*/
 }
 
 void SceneObject::render() {
-    //shaderProgram.use();
-    //shaderProgram.setMat4("model", transform.toMat4());
-    //shaderProgram.setUniform("material", material);
-    geometry.render();
+
+    if(shaderProgram) {
+        shaderProgram->bind();
+
+        int location = shaderProgram->uniformLocation("model");
+        shaderProgram->setUniformValue(location, QMatrix4x4(transform));
+
+        location = shaderProgram->uniformLocation("material.albedo");
+        shaderProgram->setUniformValue(location, material.albedo);
+
+        location = shaderProgram->uniformLocation("material.metallic");
+        shaderProgram->setUniformValue(location, material.metallic);
+
+        location = shaderProgram->uniformLocation("material.roughness");
+        shaderProgram->setUniformValue(location, material.roughness);
+
+        location = shaderProgram->uniformLocation("material.albedoTexture");
+        shaderProgram->setUniformValue(location, false);
+    } else {
+        qDebug() << "No Shader attached";
+    }
+
+    geometry->render();
 }
 
 Material& SceneObject::getMaterial() {

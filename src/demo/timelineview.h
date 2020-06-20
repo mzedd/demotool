@@ -45,7 +45,7 @@ private:
 
     enum DragState {
         none,
-        cursorDrag
+        cursorDrag,
     };
 
     DragState dragState;

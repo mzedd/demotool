@@ -1,5 +1,9 @@
 #include "Scene.h"
 
+#include "src/modelling/Plane.h"
+
+#include <QOpenGLFunctions>
+
 Scene::Scene() :
     Scene(QVector3D(0.0f, 0.0f, 0.0f)) {
 }
@@ -14,31 +18,51 @@ Scene::~Scene() {
     for(std::vector<ILightSource*>::iterator it = lightSourceList.begin(); it != lightSourceList.end(); it++) {
         delete *it;
     }
+    for(std::vector<SceneObject*>::iterator it = sceneObjectList.begin(); it != sceneObjectList.end(); it++) {
+        delete *it;
+    }
 }
 
 void Scene::render() {
-    /*
+
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+
     // clear background
-    glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    f->glClearColor(backgroundColor.x(), backgroundColor.y(), backgroundColor.z(), 1.0f);
+    f->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
     // setup projection matrix
-    Engine::instance().updateShaderProjectionMatrices();
+    //Engine::instance().updateShaderProjectionMatrices();
 
-    for(std::vector<SceneObject>::iterator it = sceneObjectList.begin(); it != sceneObjectList.end(); it++) {
+    int location = 0;
+
+    for(std::vector<SceneObject*>::iterator it = sceneObjectList.begin(); it != sceneObjectList.end(); it++) {
         // pass light to scene objects shader
-        it->shaderProgram.setInt("lightCount", static_cast<int>(lightSourceList.size()));
+        location = (*it)->shaderProgram->uniformLocation("lightCount");
+        (*it)->shaderProgram->setUniformValue(location, static_cast<int>(lightSourceList.size()));
+
         for(std::vector<ILightSource*>::iterator lit = lightSourceList.begin(); lit != lightSourceList.end(); lit++) { // TODO: to light passing only per shader
-            (*lit)->sendToShader(it->shaderProgram, lit-lightSourceList.begin());
+            location = (*it)->shaderProgram->uniformLocation("lightSource[0].type");
+            (*it)->shaderProgram->setUniformValue(location, 0);
+            location = (*it)->shaderProgram->uniformLocation("lightSource[0].intensity");
+            (*it)->shaderProgram->setUniformValue(location, (*lit)->getIntensity());
+            location = (*it)->shaderProgram->uniformLocation("lightSource[0].position");
+            (*it)->shaderProgram->setUniformValue(location, (*lit)->getPosition());
+            //location = (*it)->shaderProgram.uniformLocation("lightSource[0].direction");
+            //(*it)->shaderProgram.setUniformValue(location, (*lit)->getDirection());
         }
-        it->shaderProgram.setMat4("view", activeCamera->getViewMatrix());
-        it->shaderProgram.setUniform("camPos", activeCamera->position);
-        it->render();
-    }*/
+
+        location = (*it)->shaderProgram->uniformLocation("view");
+        (*it)->shaderProgram->setUniformValue(location, activeCamera->getViewMatrix());
+        location = (*it)->shaderProgram->uniformLocation("camPos");
+        (*it)->shaderProgram->setUniformValue(location, activeCamera->position);
+
+        (*it)->render();
+    }
 }
 
-void Scene::addSceneObject(SceneObject &sceneObject) {
+void Scene::addSceneObject(SceneObject *sceneObject) {
     sceneObjectList.push_back(sceneObject);
 }
 
@@ -60,4 +84,9 @@ void Scene::setEditorCamera() {
 
 void Scene::setBackgroundColor(QVector3D color) {
     backgroundColor = color;
+}
+
+SceneObject &Scene::getSceneObject(int id)
+{
+    return *sceneObjectList[id];
 }

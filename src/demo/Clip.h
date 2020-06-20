@@ -16,12 +16,12 @@ private:
 public:
     Clip();
     Clip(QString name);
-    void attachScene(Scene& scene);
+    void attachScene(Scene *scene);
     void attachCamera(int cameraNumber);
     void setDuration(const float duration);
     float getDuration();
     QString getName() const;
-    Scene& getScene() const;
+    Scene* getScene() const;
     void setName(const QString name);
 };
 

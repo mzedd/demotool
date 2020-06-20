@@ -1,6 +1,7 @@
 #include "Plane.h"
 
 #include <QVector3D>
+#include <QOpenGLFunctions>
 
 Plane::Plane() :
     Geometry(1),
@@ -77,8 +78,10 @@ void Plane::generate() {
 }
 
 void Plane::render() {
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
+
     vao.bind();
     for(int i = 0; i < resolution+2; i++) {
-        glDrawElements(GL_TRIANGLE_STRIP, (resolution+2)*2, GL_UNSIGNED_INT, (void*)((resolution+2)*2*i*sizeof(unsigned int)));
+        f->glDrawElements(GL_TRIANGLE_STRIP, (resolution+2)*2, GL_UNSIGNED_INT, (void*)((resolution+2)*2*i*sizeof(unsigned int)));
     }
 }

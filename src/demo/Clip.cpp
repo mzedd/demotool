@@ -16,8 +16,8 @@ Clip::Clip(QString name)
 {
 }
 
-void Clip::attachScene(Scene &scene) {
-    this->scene = &scene;
+void Clip::attachScene(Scene *scene) {
+    this->scene = scene;
 }
 
 void Clip::attachCamera(int cameraNumber) {
@@ -40,11 +40,12 @@ QString Clip::getName() const {
     return name;
 }
 
-Scene &Clip::getScene() const
+Scene* Clip::getScene() const
 {
     if(scene) {
-        return *scene;
+        return scene;
     }
+    return nullptr;
 }
 
 void Clip::setName(const QString name) {
