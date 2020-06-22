@@ -27,6 +27,7 @@ endif()
 target_include_directories(QMidi PRIVATE
     "${CMAKE_SOURCE_DIR}/thirdparty/QMidi/src"
     "${CMAKE_SOURCE_DIR}/thirdparty/QMidi/src/OS"
+    "${CMAKE_SOURCE_DIR}/src/midi"
 )
 
 # Demotool
@@ -54,6 +55,9 @@ set(SOURCES
     demo.cpp 
     main.cpp
     mainwindow.cpp
+# Midi System Sources
+    src/midi/MidiController.cpp
+    src/midi/ValueControl.cpp
 # Ui Sources
     cliparrangement.ui
     mainwindow.ui
@@ -65,6 +69,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/src"
     "${CMAKE_SOURCE_DIR}/thirdparty/QMidi/src"
     "${CMAKE_SOURCE_DIR}/thirdparty/QMidi/src/OS"
+    "${CMAKE_SOURCE_DIR}/src/midi"
 )
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets QMidi)
 
