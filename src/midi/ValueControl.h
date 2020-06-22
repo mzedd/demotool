@@ -12,20 +12,35 @@
 class ValueControl
 {
     public:
+    //! Enum for specifying which bytes should be checked when parsing midi messages. Note that they must be ordered.
+    typedef enum
+    {
+        Track = 1,
+        Voice = 2,
+        Note = 4, 
+        Velocity = 8,
+        Amount = 16,
+        Number = 32,
+        Value = 64,
+        Numerator = 128,
+        Denominator = 256
+    } MessageFormat;
+
     //! Constructor
-    /*! \param inputMessageFormat construct a string with byte meanings of incoming midi messages.
-     *  <table>
-     *      <th><td>id</td><td>meaning</td></th>
-     *      <tr><td>@vh</td><td>value high byte</td></tr>
-     *      <tr><td>@vl</td><td>value low byte</td></tr>
-     *      <tr><td>@idh1</td><td>highest id byte</td></tr>
-     *      <tr><td>@idh2</td><td>second highest id byte</td></tr>
-     *      <tr><td>@idh3</td><td>third highest id byte</td></tr>
-     *      <tr><td>@ida1</td><td>highest age byte</td></tr>
-     *  </table>
-     *  \param outputMessageFormat construct a string with byte meanings of outgoing midi messages.
+    /*! 
+     * Example:
+     * \code{.cpp}
+     * ValueControl *fader = new ValueControl(Track | Amount)
+     * \endcode
+     * \param name human readable name for the specific control
+     * \param inputIdFormat use MessageFormat to construct the format from the bytes that should be matched when checking responsibility.
+     * \param inputValueFormat use MessageFormat to construct the format from the bytes that shoudl be extracted when processing incoming midi messages.
+     * \param inputId input Id to check for, in the same order as inputIdFormat.
+     * \param outputIdFormat use MessageFormat to construct the format used for creating output messages.
+     * \param outputValueFormat use MessageFormat to pass the information which fields should be used to transport output values.
+     * \param outputId output Id to check for, in the same order as outputIdFormat.
      */ 
-    ValueControl(QString inputMessageFormat, QString outputMessageFormat = "");
+    ValueControl(QString name, int inputIdFormat, int inputValueFormat, QList<int> inputId, int outputIdFormat, int outputValueFormat, QList<int> outputId);
 
     //! Destructor
     virtual ~ValueControl();
@@ -38,9 +53,6 @@ class ValueControl
 
     //! Bool value of the state; useful for midi keyboard keys or buttons
     bool boolValue();
-
-    //! Integer value for the "age" of the ValueControl (how much ValueControl ticks have already happened).
-    int currentAge();
 
     //! Change the state of the ValueControl with the specific midi event contained in message.
     //! \param message message to parse with messageFormat instructions
@@ -67,8 +79,12 @@ class ValueControl
 
     private:
     int value,
-        age;
+        inputIdFormat,
+        inputValueFormat,
+        outputIdFormat,
+        outputValueFormat;
+    QList<int> inputId,
+        outputId;
     bool on;
-    QString inputMessageFormat,
-        outputMessageFormat;
+    QString name;
 };

@@ -58,6 +58,7 @@ set(SOURCES
 # Midi System Sources
     src/midi/MidiController.cpp
     src/midi/ValueControl.cpp
+    src/midi/AkaiAPC40MkII.cpp
 # Ui Sources
     cliparrangement.ui
     mainwindow.ui
