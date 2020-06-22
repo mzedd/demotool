@@ -55,8 +55,41 @@ MidiController::MidiController(QString _key, QString _name, int _type)
     if(type & OutputController)
     {
         midiOut = new QMidiOut();
-        midiOut->connect(key);
+        if(!midiOut->connect(key))
+        {
+            qDebug() << "Could not connect to midi out" << key;
+        }
     }
+
+    QMidiEvent event;
+    // event.setMessage(0x8 << 4 | (0x52 + 0) << 8 | 67 << 16);
+    // event.setTrack(i);
+    // event.setVoice(j);
+    // event.setNote(k);
+    // event.setVelocity(l);
+    // event.setAmount(-1);
+    // event.setNumber(-1);
+    // event.setValue(-1);
+    // event.setNumerator(-1);
+    // event.setDenominator(-1);
+    // event.setType(QMidiEvent::NoteOn);
+    event.setTrack(0);
+    event.setVoice(14);
+    event.setNumber(8);
+    event.setVelocity(17);
+    qDebug() << "test output event" << ":" 
+        << event.track()
+        << event.voice()
+        << event.note() 
+        << event.velocity() 
+        << event.amount()
+        << event.number()
+        << event.value()
+        << event.numerator()
+        << event.denominator();
+    midiOut->sendEvent(event);
+    // qDebug() << QColor("#1E1E1E");
+    // midiOut->sendMsg(0x9 << 4 | 4 << 8 | 13 << 16);
 }
 
 MidiController::~MidiController()

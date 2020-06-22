@@ -62,9 +62,6 @@ class ValueControl
     //! \param message MIDI message to check responsibility for.
     bool isResponsible(QMidiEvent message);
 
-    //! Check if output message format for colored buttons can be constructed
-    bool canLightColor();
-
     //! Find the nearest color index to the QColor specified and create a midi message lighting this color.
     QMidiEvent lightColor(QColor color);
 

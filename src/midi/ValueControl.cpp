@@ -29,6 +29,11 @@ int ValueControl::intValue()
     return value;
 }
 
+bool ValueControl::boolValue()
+{
+    return value == 127;
+}
+
 bool ValueControl::isResponsible(QMidiEvent message)
 {
     bool responsibility = true;
@@ -57,4 +62,10 @@ void ValueControl::changeState(QMidiEvent message)
     if(inputValueFormat & Numerator) value = message.numerator();
     if(inputValueFormat & Denominator) value = message.denominator();
     qDebug() << name << ": new value " << value;
+}
+
+QMidiEvent ValueControl::lightColor(QColor color)
+{
+    QList<QColor> availableColors;
+    return QMidiEvent();
 }
