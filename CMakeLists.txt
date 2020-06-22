@@ -10,6 +10,27 @@ set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} "C:\\Qt\\5.15.0\\msvc2019_64\\")
 
 find_package(Qt5 COMPONENTS Core Gui Widgets)
 
+# QMidi
+set(QMIDI_SOURCES 
+    thirdparty/QMidi/src/QMidiOut.cpp 
+	thirdparty/QMidi/src/QMidiFile.cpp 
+	thirdparty/QMidi/src/QMidiIn.cpp
+)
+
+if(WIN32)
+    add_library(QMidi ${QMIDI_SOURCES} thirdparty/QMidi/src/OS/QMidi_Win32.cpp)
+    target_link_libraries(QMidi winmm Qt5::Core)
+    elseif(UNIX)
+    add_library(QMidi ${QMIDI_SOURCES} thirdparty/QMidi/src/OS/QMidi_ALSA.cpp)
+    target_link_libraries(QMidi asound Qt5::Core)
+endif()
+target_include_directories(QMidi PRIVATE
+    "${CMAKE_SOURCE_DIR}/thirdparty/QMidi/src"
+    "${CMAKE_SOURCE_DIR}/thirdparty/QMidi/src/OS"
+    "${CMAKE_SOURCE_DIR}/src/midi"
+)
+
+# Demotool
 set(SOURCES
 # C++ sources
     ClipArrangement.cpp 
@@ -34,6 +55,10 @@ set(SOURCES
     demo.cpp 
     main.cpp
     mainwindow.cpp
+# Midi System Sources
+    src/midi/MidiController.cpp
+    src/midi/ValueControl.cpp
+    src/midi/AkaiAPC40MkII.cpp
 # Ui Sources
     cliparrangement.ui
     mainwindow.ui
@@ -41,8 +66,13 @@ set(SOURCES
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/src")
-target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets)
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    "${CMAKE_SOURCE_DIR}/src"
+    "${CMAKE_SOURCE_DIR}/thirdparty/QMidi/src"
+    "${CMAKE_SOURCE_DIR}/thirdparty/QMidi/src/OS"
+    "${CMAKE_SOURCE_DIR}/src/midi"
+)
+target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Widgets QMidi)
 
 if(WIN32)
     get_filename_component(_qt_bin_dir "${QT_QMAKE_EXECUTABLE}" DIRECTORY)
