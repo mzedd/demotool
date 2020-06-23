@@ -94,15 +94,15 @@ void MidiController::inputEventReceived(quint32 message, quint32 timing)
             controls.at(i)->changeState(event);
     }
 
-    // qDebug() << name << ":" << message << timing;
-    qDebug() << name << ":" 
-        << event.track()
-        << event.voice()
-        << event.note() 
-        << event.velocity() 
-        << event.amount()
-        << event.number()
-        << event.value()
-        << event.numerator()
-        << event.denominator();
+    // // qDebug() << name << ":" << message << timing;
+    // qDebug() << name << ":" 
+    //     << event.track()
+    //     << event.voice()
+    //     << event.note() 
+    //     << event.velocity() 
+    //     << event.amount()
+    //     << event.number()
+    //     << event.value()
+    //     << event.numerator()
+    //     << event.denominator();
 }

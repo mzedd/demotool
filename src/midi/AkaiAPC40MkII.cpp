@@ -218,10 +218,11 @@ AkaiAPC40MkII::AkaiAPC40MkII(QString _inputKey, QString _outputKey, QString _nam
         << QColor("#B35F00")
         << QColor("#4B1502");
 
+    for(int a = 0; a < 100; ++a)
     for(int i=0; i<8; ++i)
         for(int j=0; j<5; ++j)
         {
-            lightMatrix(i, j, Qt::blue);
+            lightMatrix(i, j, QColor::fromRgbF(.5+.5*cos(.1*a+i),.5+.5*cos(.1*a+j+2.),.5+.5*cos(.1*a+i+4.)));
         }
 }
 
