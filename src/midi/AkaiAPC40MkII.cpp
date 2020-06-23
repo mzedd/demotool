@@ -358,7 +358,7 @@ void AkaiAPC40MkII::lightMatrix(int x, int y, QColor color)
     if(x<0) return;
     if(y<0) return;
 
-    ValueControl *button = matrixButton(x,y);
+    ValueControl *button = control(MatrixButton, matrixOffset(x,y));
     QMidiEvent event = button->setValue(codeFromColor(color));
     midiOut->sendEvent(event);
     emit matrixLit(x,y,color);
@@ -369,242 +369,25 @@ void AkaiAPC40MkII::lightSceneLaunchButton(int y, QColor color)
     if(y<0) return;
     if(y>4) return;
 
-    ValueControl *button = sceneLaunchButton(y);
+    ValueControl *button = control(SceneLaunchButton, y);
     QMidiEvent event = button->setValue(codeFromColor(color));
     midiOut->sendEvent(event);
     emit sceneLaunchButtonLit(y, color);
 }
 
-ValueControl *AkaiAPC40MkII::fader(int index)
+ValueControl *AkaiAPC40MkII::control(ControlType type, int offset)
 {
-    if(index > 7) return nullptr;
-    if(index < 0) return nullptr;
-
-    return controls.at(index);
+    return controls.at((int)type + offset);
 }
 
-ValueControl *AkaiAPC40MkII::masterFader()
+int AkaiAPC40MkII::matrixOffset(int x, int y)
 {
-    return controls.at(8);
+    return y * 8 + x;
 }
 
-ValueControl *AkaiAPC40MkII::horizontalSlider()
+int AkaiAPC40MkII::bankOffset(int bank, int knob)
 {
-    return controls.at(9);
-}
-
-ValueControl *AkaiAPC40MkII::bankKnob(int bank, int knob)
-{
-    if(bank>8) return nullptr;
-    if(bank<0) return nullptr;
-    if(knob>8) return nullptr;
-    if(knob<0) return nullptr;
-
-    return controls.at(10+bank*8+knob);
-}
-
-ValueControl *AkaiAPC40MkII::masterBankKnob(int knob)
-{
-    if(knob > 7) return nullptr;
-    if(knob < 0) return nullptr;
-
-    return controls.at(74 + knob);
-}
-
-ValueControl *AkaiAPC40MkII::topKnob(int knob)
-{
-    if(knob > 7) return nullptr;
-    if(knob < 0) return nullptr;
-
-    return controls.at(82 + knob);
-}
-
-ValueControl *AkaiAPC40MkII::matrixButton(int x, int y)
-{
-    if(x > 7) return nullptr;
-    if(x < 0) return nullptr;
-    if(y > 4) return nullptr;
-    if(y < 0) return nullptr;
-
-    return controls.at(90 + y*8 + x);
-}
-
-ValueControl *AkaiAPC40MkII::sceneLaunchButton(int y)
-{
-    if(y < 0) return nullptr;
-    if(y > 4) return nullptr;
-
-    return controls.at(130 + y);
-}
-
-ValueControl *AkaiAPC40MkII::clipStopButton(int x)
-{
-    if(x < 0) return nullptr;
-    if(x > 7) return nullptr;
-
-    return controls.at(135 + x);
-}
-
-ValueControl *AkaiAPC40MkII::triStateButton(int x)
-{
-    if(x < 0) return nullptr;
-    if(x > 7) return nullptr;
-
-    return controls.at(143 + x);
-}
-
-ValueControl *AkaiAPC40MkII::numberButton(int x)
-{
-    if(x < 0) return nullptr;
-    if(x > 7) return nullptr;
-
-    return controls.at(151 + x);
-}
-
-ValueControl *AkaiAPC40MkII::sButton(int x)
-{
-    if(x < 0) return nullptr;
-    if(x > 7) return nullptr;
-
-    return controls.at(159 + x);
-}
-
-ValueControl *AkaiAPC40MkII::recButton(int x)
-{
-    if(x < 0) return nullptr;
-    if(x > 7) return nullptr;
-
-    return controls.at(167 + x);
-}
-
-ValueControl *AkaiAPC40MkII::bankSelectLeftButton()
-{
-    return controls.at(185);
-}
-
-ValueControl *AkaiAPC40MkII::bankSelectTopButton()
-{
-    return controls.at(186);
-}
-
-ValueControl *AkaiAPC40MkII::bankSelectRightButton()
-{
-    return controls.at(187);
-}
-
-ValueControl *AkaiAPC40MkII::bankSelectBottomButton()
-{
-    return controls.at(188);
-}
-
-ValueControl *AkaiAPC40MkII::shiftButton()
-{
-    return controls.at(189);
-}
-
-ValueControl *AkaiAPC40MkII::bankButton()
-{
-    return controls.at(190);
-}
-
-ValueControl *AkaiAPC40MkII::detailViewButton()
-{
-    return controls.at(191);
-}
-
-ValueControl *AkaiAPC40MkII::clipDevViewButton()
-{
-    return controls.at(192);
-}
-
-ValueControl *AkaiAPC40MkII::devLockButton()
-{
-    return controls.at(193);
-}
-
-ValueControl *AkaiAPC40MkII::devOnOFfButton()
-{
-    return controls.at(194);
-}
-
-ValueControl *AkaiAPC40MkII::bankRightArrowButton()
-{
-    return controls.at(195);
-}
-
-ValueControl *AkaiAPC40MkII::bankLeftArrowButton()
-{
-    return controls.at(196);
-}
-
-ValueControl *AkaiAPC40MkII::deviceRightArrowButton()
-{
-    return controls.at(197);
-}
-
-ValueControl *AkaiAPC40MkII::deviceLeftArrowButton()
-{
-    return controls.at(198);
-}
-
-ValueControl *AkaiAPC40MkII::nudgePlusButton()
-{
-    return controls.at(199);
-}
-
-ValueControl *AkaiAPC40MkII::nudgeMinusButton()
-{
-    return controls.at(200);
-}
-
-ValueControl *AkaiAPC40MkII::userButton()
-{
-    return controls.at(201);
-}
-
-ValueControl *AkaiAPC40MkII::tapTempoButton()
-{
-    return controls.at(202);
-}
-
-ValueControl *AkaiAPC40MkII::metronomeButton()
-{
-    return controls.at(203);
-}
-
-ValueControl *AkaiAPC40MkII::sendsButton()
-{
-    return controls.at(204);
-}
-
-ValueControl *AkaiAPC40MkII::panButton()
-{
-    return controls.at(205);
-}
-
-ValueControl *AkaiAPC40MkII::playButton()
-{
-    return controls.at(206);
-}
-
-ValueControl *AkaiAPC40MkII::recordButton()
-{
-    return controls.at(207);
-}
-
-ValueControl *AkaiAPC40MkII::sessionButton()
-{
-    return controls.at(208);
-}
-
-ValueControl *AkaiAPC40MkII::cueLevelKnob()
-{
-    return controls.at(209);
-}
-
-ValueControl *AkaiAPC40MkII::TempoKnob()
-{
-    return controls.at(210);
+    return bank * 8 + knob;
 }
 
 void AkaiAPC40MkII::updateControlOutputs(ValueControl *sender, int newValue)
