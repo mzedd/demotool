@@ -3,8 +3,10 @@
 
 #include <cmath>
 
-AkaiAPC40MkII::AkaiAPC40MkII(QString _key, QString _name, int _type)
-    : MidiController(_key, _name, _type)
+#include <QDebug>
+
+AkaiAPC40MkII::AkaiAPC40MkII(QString _inputKey, QString _outputKey, QString _name, int _type)
+    : MidiController(_inputKey, _outputKey, _name, _type)
 {
     // Lower faders
     QList<int> idList;
@@ -55,18 +57,18 @@ AkaiAPC40MkII::AkaiAPC40MkII(QString _key, QString _name, int _type)
 
     // Button matrix
     idList.clear();
+    int mask = ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator;
     idList << -1 << 0 << 0 << -1 << -1 << -1 << -1 << -1;
     for(int i=0; i<40; ++i)
     {
         idList[2] = i;
-        controls.push_back(new ValueControl("Matrix Button " + QString::number(i), ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Velocity, idList, 0, 0, QList<int>()));
-    }
+        controls.push_back(new ValueControl("Matrix Button " + QString::number(i), mask, ValueControl::Velocity, idList, mask, ValueControl::Velocity, idList));    }
 
     // Scene launch line right of button matrix
     for(int i=0; i<5; ++i)
     {
         idList[2] = 82 + i;
-        controls.push_back(new ValueControl("Scene launch Button " + QString::number(i), ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Velocity, idList, 0, 0, QList<int>()));
+        controls.push_back(new ValueControl("Scene launch Button " + QString::number(i), mask, ValueControl::Velocity, idList, mask, ValueControl::Velocity, idList));
     }
 
     // Clip stop row below button matrix
@@ -215,10 +217,21 @@ AkaiAPC40MkII::AkaiAPC40MkII(QString _key, QString _name, int _type)
         << QColor("#3F3100")
         << QColor("#B35F00")
         << QColor("#4B1502");
+
+    for(int i=0; i<8; ++i)
+        for(int j=0; j<5; ++j)
+        {
+            lightMatrix(i, j, Qt::blue);
+        }
 }
 
 AkaiAPC40MkII::~AkaiAPC40MkII()
 {
+    for(int i=0; i<8; ++i)
+        for(int j=0; j<5; ++j)
+        {
+            lightMatrix(i, j, Qt::black);
+        }
 }
 
 int AkaiAPC40MkII::codeFromColor(QColor color)
@@ -237,7 +250,7 @@ int AkaiAPC40MkII::codeFromColor(QColor color)
         if(distance < mostSimiliarDistance)
         {
             mostSimiliarDistance = distance;
-            mostSimiliarIndex = 0;
+            mostSimiliarIndex = i;
         }
     }
     return mostSimiliarIndex;
@@ -246,4 +259,104 @@ int AkaiAPC40MkII::codeFromColor(QColor color)
 QColor AkaiAPC40MkII::colorFromCode(int index)
 {
     return colors.at(index);
+}
+
+void AkaiAPC40MkII::lightMatrix(int x, int y, QColor color)
+{
+    if(x>7) return;
+    if(y>4) return;
+    if(x<0) return;
+    if(y<0) return;
+
+    ValueControl *button = matrixButton(x,y);
+    QMidiEvent event = button->setValue(codeFromColor(color));
+    midiOut->sendEvent(event);
+}
+
+void AkaiAPC40MkII::lightSceneLaunch(int y, QColor color)
+{
+    if(y<0) return;
+    if(y>4) return;
+
+    ValueControl *button = sceneLaunchButton(y);
+    QMidiEvent event = button->setValue(codeFromColor(color));
+    midiOut->sendEvent(event);
+}
+
+ValueControl *AkaiAPC40MkII::fader(int index)
+{
+    if(index > 7) return nullptr;
+    if(index < 0) return nullptr;
+
+    return controls.at(index);
+}
+
+ValueControl *AkaiAPC40MkII::masterFader()
+{
+    return controls.at(8);
+}
+
+ValueControl *AkaiAPC40MkII::horizontalSlider()
+{
+    return controls.at(9);
+}
+
+ValueControl *AkaiAPC40MkII::bankKnob(int bank, int knob)
+{
+    if(bank>8) return nullptr;
+    if(bank<0) return nullptr;
+    if(knob>8) return nullptr;
+    if(knob<0) return nullptr;
+
+    return controls.at(10+bank*8+knob);
+}
+
+ValueControl *AkaiAPC40MkII::masterBankKnob(int knob)
+{
+    if(knob > 7) return nullptr;
+    if(knob < 0) return nullptr;
+
+    return controls.at(74 + knob);
+}
+
+ValueControl *AkaiAPC40MkII::topKnob(int knob)
+{
+    if(knob > 7) return nullptr;
+    if(knob < 0) return nullptr;
+
+    return controls.at(82 + knob);
+}
+
+ValueControl *AkaiAPC40MkII::matrixButton(int x, int y)
+{
+    if(x > 7) return nullptr;
+    if(x < 0) return nullptr;
+    if(y > 4) return nullptr;
+    if(y < 0) return nullptr;
+
+    return controls.at(90 + y*8 + x);
+}
+
+ValueControl *AkaiAPC40MkII::sceneLaunchButton(int y)
+{
+    if(y < 0) return nullptr;
+    if(y > 4) return nullptr;
+
+    return controls.at(130 + y);
+}
+
+ValueControl *AkaiAPC40MkII::clipStopButton(int x)
+{
+    if(x < 0) return nullptr;
+    if(x > 7) return nullptr;
+
+    return controls.at(135 + x);
+}
+
+ValueControl *AkaiAPC40MkII::triStateButton(int x)
+{
+    if(x < 0) return nullptr;
+    if(x > 7) return nullptr;
+
+    return controls.at(143 + x);
 }

@@ -19,10 +19,11 @@ class MidiController : QObject
     };
 
     //! Constructs the midi controller class with
-    //! \param key midi identifier used by the controller
+    //! \param inputKey midi input identifier used by the controller
+    //! \param outputKey midi output identifier used by the controller
     //! \param name human readable name of the controller
     //! \param type specifies input, output or both; expects ControllerType
-    MidiController(QString key, QString name, int type);
+    MidiController(QString inputKey, QString outputKey, QString name, int type);
     
     //! Destructor
     virtual ~MidiController();
@@ -31,12 +32,11 @@ class MidiController : QObject
     //! Controller type is set accordingly, if output capabilities are present.
     static QList<MidiController *> availableControllers();
 
-    QString key,
+    QString inputKey,
+        outputKey,
         name;
     int type;
     QList<ValueControl *> controls;
-
-    private:
 
     QMidiIn *midiIn;
     QMidiOut *midiOut;

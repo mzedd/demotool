@@ -62,17 +62,9 @@ class ValueControl
     //! \param message MIDI message to check responsibility for.
     bool isResponsible(QMidiEvent message);
 
-    //! Find the nearest color index to the QColor specified and create a midi message lighting this color.
-    QMidiEvent lightColor(QColor color);
-
-    //! Check if out put message format allows setting of values (as the case with motor faders)
-    bool canSetValues();
-
-    //! set Value to the value nearest to the supplied floating point value and construct MIDI message.
-    QMidiEvent setValue(float value);
-
     //! set Value to the specific integer value supplied here and return QMidiEvent representing that
     QMidiEvent setValue(int value);
+    QString name;
 
     private:
     int value,
@@ -83,5 +75,4 @@ class ValueControl
     QList<int> inputId,
         outputId;
     bool on;
-    QString name;
 };

@@ -64,8 +64,28 @@ void ValueControl::changeState(QMidiEvent message)
     qDebug() << name << ": new value " << value;
 }
 
-QMidiEvent ValueControl::lightColor(QColor color)
+QMidiEvent ValueControl::setValue(int value)
 {
-    QList<QColor> availableColors;
-    return QMidiEvent();
+    QMidiEvent event;
+    int compareIndex = 0;
+    event.setType(QMidiEvent::NoteOn);
+    if(outputIdFormat & Track) event.setTrack(outputId.at(compareIndex++));
+    if(outputIdFormat & Voice) event.setVoice(outputId.at(compareIndex++));
+    if(outputIdFormat & Note) event.setNote(outputId.at(compareIndex++));
+    if(outputIdFormat & Velocity) event.setVelocity(outputId.at(compareIndex++));
+    if(outputIdFormat & Amount) event.setAmount(outputId.at(compareIndex++));
+    if(outputIdFormat & Number) event.setNumber(outputId.at(compareIndex++));
+    if(outputIdFormat & Value) event.setValue(outputId.at(compareIndex++));
+    if(outputIdFormat & Numerator) event.setNumerator(outputId.at(compareIndex++));
+    if(outputIdFormat & Denominator) event.setDenominator(outputId.at(compareIndex++));
+    if(inputValueFormat & Track) event.setTrack(value);
+    if(inputValueFormat & Voice) event.setVoice(value);
+    if(inputValueFormat & Note) event.setNote(value);
+    if(inputValueFormat & Velocity) event.setVelocity(value);
+    if(inputValueFormat & Amount) event.setAmount(value);
+    if(inputValueFormat & Number) event.setNumber(value);
+    if(inputValueFormat & Value) event.setValue(value);
+    if(inputValueFormat & Numerator) event.setNumerator(value);
+    if(inputValueFormat & Denominator) event.setDenominator(value);
+    return event;
 }
