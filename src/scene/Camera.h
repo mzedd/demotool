@@ -9,6 +9,8 @@ private:
 	float yaw;
 	float pitch;
 
+    QMatrix4x4 projection;
+
 public:
     QVector3D position;
     QVector3D front;
@@ -23,9 +25,10 @@ public:
     QVector3D getRight();
     QVector3D getUp();
     QMatrix4x4 getViewMatrix();
-    QMatrix4x4 getProjectionMatrix(int width, int height);
+    const QMatrix4x4 &getProjectionMatrix();
 	void updateFront(float xpos, float ypos);
     void addScrollOffset(float offset);
+    void updateProjectionMatrix(const int width, const int height);
 };
 
 #endif /* CAMERA_H */

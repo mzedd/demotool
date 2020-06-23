@@ -3,13 +3,14 @@
 #include <QtMath>
 
 Camera::Camera() :
+    yaw(0.0f),
+    pitch(0.0f),
+    projection(),
     position(0.0f, 0.0f, 0.0f),
     front(QVector3D(0.0f, 0.0f, -1.0f)),
     up(QVector3D(0.0f, 1.0f, 0.0f)),
 	speed(1.0f),
 	fov(45.0f),
-	yaw(0.0f),
-	pitch(0.0f),
 	lastX(0.0f),
 	lastY(0.0f),
 	sensitivity(0.1f),
@@ -17,14 +18,15 @@ Camera::Camera() :
 }
 
 Camera::Camera(QVector3D position, QVector3D front, QVector3D up, float speed) :
-	position(position),
+    yaw(-90.0f),
+    pitch(0.0f),
+    projection(),
+    position(position),
 	front(front),
 	up(up),
 	speed(speed),
 	fov(45.0f),
-	yaw(-90.0f),
-	pitch(0.0f),
-	lastX(400),
+    lastX(400),
 	lastY(300),
 	sensitivity(0.1f),
     firstMouse(true) {
@@ -82,11 +84,14 @@ void Camera::addScrollOffset(float offset) {
 	}
 	else if (fov < 1.0f) {
 		fov = 1.0f;
-	}
+    }
 }
 
-QMatrix4x4 Camera::getProjectionMatrix(int width, int height) {
-    QMatrix4x4 result;
-    result.perspective(qDegreesToRadians(fov), width/(double)height, 0.1, 100.0f);
-    return result;
+void Camera::updateProjectionMatrix(const int width, const int height)
+{
+    projection.perspective(qDegreesToRadians(fov), width/(double)height, 0.1, 100.0f);
+}
+
+const QMatrix4x4 &Camera::getProjectionMatrix() {
+    return projection;
 }
