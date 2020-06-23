@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-ValueControl::ValueControl(QString _name, int _inputIdFormat, int _inputValueFormat, QList<int> _inputId, int _outputIdFormat, int _outputValueFormat, QList<int> _outputId)
+ValueControl::ValueControl(QString _name, int _inputIdFormat, int _inputValueFormat, QList<int> _inputId, int _outputIdFormat, int _outputValueFormat, QList<int> _outputId, bool _differential)
     : name(_name)
     , inputIdFormat(_inputIdFormat)
     , inputValueFormat(_inputValueFormat)
@@ -10,6 +10,7 @@ ValueControl::ValueControl(QString _name, int _inputIdFormat, int _inputValueFor
     , outputIdFormat(_outputIdFormat)
     , outputValueFormat(_outputValueFormat)
     , outputId(_outputId)
+    , differential(_differential)
 {
 
 }
@@ -47,21 +48,41 @@ bool ValueControl::isResponsible(QMidiEvent message)
     if(inputIdFormat & Value) responsibility = responsibility && (message.value() == inputId.at(compareIndex++));
     if(inputIdFormat & Numerator) responsibility = responsibility && (message.numerator() == inputId.at(compareIndex++));
     if(inputIdFormat & Denominator) responsibility = responsibility && (message.denominator() == inputId.at(compareIndex++));
+    if(inputIdFormat & Type) responsibility = responsibility && (message.type() == inputId.at(compareIndex++));
     return responsibility;
 }
 
 void ValueControl::changeState(QMidiEvent message)
 {
-    if(inputValueFormat & Track) value = message.track();
-    if(inputValueFormat & Voice) value = message.voice();
-    if(inputValueFormat & Note) value = message.note();
-    if(inputValueFormat & Velocity) value = message.velocity();
-    if(inputValueFormat & Amount) value = message.amount();
-    if(inputValueFormat & Number) value = message.number();
-    if(inputValueFormat & Value) value = message.value();
-    if(inputValueFormat & Numerator) value = message.numerator();
-    if(inputValueFormat & Denominator) value = message.denominator();
-    qDebug() << name << ": new value " << value;
+    if(differential)
+    {
+        if(inputValueFormat & Track) value += message.track()<65?message.track():message.track()-128;
+        if(inputValueFormat & Voice) value += message.voice()<65?message.voice():message.voice()-128;
+        if(inputValueFormat & Note) value += message.note()<65?message.note():message.note()-128;
+        if(inputValueFormat & Velocity) value += message.velocity()<65?message.velocity():message.velocity()-128;
+        if(inputValueFormat & Amount) value += message.amount()<65?message.amount():message.amount()-128;
+        if(inputValueFormat & Number) value += message.number()<65?message.number():message.number()-128;
+        if(inputValueFormat & Value) value += message.value()<65?message.value():message.value()-128;
+        if(inputValueFormat & Numerator) message.numerator()<65?value += message.numerator():message.numerator()-128;
+        if(inputValueFormat & Denominator) message.denominator()<65?value += message.denominator():message.denominator()-128;
+        if(inputValueFormat & Type) message.type()<65?value += message.type():message.type()-128;
+    }
+    else
+    {
+        if(inputValueFormat & Track) value = message.track();
+        if(inputValueFormat & Voice) value = message.voice();
+        if(inputValueFormat & Note) value = message.note();
+        if(inputValueFormat & Velocity) value = message.velocity();
+        if(inputValueFormat & Amount) value = message.amount();
+        if(inputValueFormat & Number) value = message.number();
+        if(inputValueFormat & Value) value = message.value();
+        if(inputValueFormat & Numerator) value = message.numerator();
+        if(inputValueFormat & Denominator) value = message.denominator();
+        if(inputValueFormat & Type) value = message.type();
+    }
+
+    emit valueChanged(this, value);
+    emit updateOutputs(this, outputValue);
 }
 
 QMidiEvent ValueControl::setValue(int value)
@@ -78,6 +99,7 @@ QMidiEvent ValueControl::setValue(int value)
     if(outputIdFormat & Value) event.setValue(outputId.at(compareIndex++));
     if(outputIdFormat & Numerator) event.setNumerator(outputId.at(compareIndex++));
     if(outputIdFormat & Denominator) event.setDenominator(outputId.at(compareIndex++));
+    if(outputIdFormat & Type) event.setType((QMidiEvent::EventType)outputId.at(compareIndex++));
     if(inputValueFormat & Track) event.setTrack(value);
     if(inputValueFormat & Voice) event.setVoice(value);
     if(inputValueFormat & Note) event.setNote(value);
@@ -87,5 +109,8 @@ QMidiEvent ValueControl::setValue(int value)
     if(inputValueFormat & Value) event.setValue(value);
     if(inputValueFormat & Numerator) event.setNumerator(value);
     if(inputValueFormat & Denominator) event.setDenominator(value);
+    if(inputValueFormat & Type) event.setType((QMidiEvent::EventType)value);
+    outputValue = value;
+    emit outputValueChanged(value);
     return event;
 }

@@ -89,6 +89,95 @@ AkaiAPC40MkII::AkaiAPC40MkII(QString _inputKey, QString _outputKey, QString _nam
         controls.push_back(new ValueControl("TriState button " + QString::number(i), ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Velocity, idList, 0, 0, QList<int>()));
     }
 
+    // Number buttons left of tristate buttons
+    idList.clear();
+    idList << -1 << 0 << 50 << 127 << -1 << -1 << -1 << -1 << -1;
+    for(int i=0; i<8; ++i)
+    {
+        idList[1] = i;
+        controls.push_back(new ValueControl("Number button " + QString::number(i), ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    }
+
+    // S buttons below number buttons
+    idList[2] = 49;
+    for(int i=0; i<8; ++i)
+    {
+        idList[1] = i;
+        controls.push_back(new ValueControl("S button " + QString::number(i), ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    }
+
+    // rec / circle buttons below tristate A|B buttons
+    idList[2] = 48;
+    for(int i=0; i<8; ++i)
+    {
+        idList[1] = i;
+        controls.push_back(new ValueControl("Rec button " + QString::number(i), ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    }
+
+    // Other controls
+    idList.clear();
+    idList << -1 << 0 << 97 << 127 << -1 << -1 << -1 << -1 << -1;
+    controls.push_back(new ValueControl("Bank select left button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 94;
+    controls.push_back(new ValueControl("Bank select top button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 96;
+    controls.push_back(new ValueControl("Bank select right button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 95;
+    controls.push_back(new ValueControl("Bank select bottom button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 98;
+    controls.push_back(new ValueControl("Shift button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 103;
+    controls.push_back(new ValueControl("Bank button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 65;
+    controls.push_back(new ValueControl("Detail view button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 64;
+    controls.push_back(new ValueControl("Clip/dev. view button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 63;
+    controls.push_back(new ValueControl("Dev. lock button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 62;
+    controls.push_back(new ValueControl("Dev. on/off button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 61;
+    controls.push_back(new ValueControl("Bank right arrow button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 60;
+    controls.push_back(new ValueControl("Bank left arrow button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 59;
+    controls.push_back(new ValueControl("Device right arrow button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 58;
+    controls.push_back(new ValueControl("Device left arrow button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 101;
+    controls.push_back(new ValueControl("Nudge + button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 100;
+    controls.push_back(new ValueControl("Nudge - button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 89;
+    controls.push_back(new ValueControl("User button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 99;
+    controls.push_back(new ValueControl("Tap Tempo button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 90;
+    controls.push_back(new ValueControl("Metronome button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 88;
+    controls.push_back(new ValueControl("Sends button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 87;
+    controls.push_back(new ValueControl("Pan button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 91;
+    controls.push_back(new ValueControl("Play button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 93;
+    controls.push_back(new ValueControl("Record button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+    idList[2] = 102;
+    controls.push_back(new ValueControl("Session button", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Value | ValueControl::Numerator | ValueControl::Denominator, ValueControl::Type, idList, 0, 0, QList<int>()));
+
+    // Cue Level knob
+    idList.clear();
+    idList << -1 << 0 << -1 << -1 << -1 << 47 << -1 << -1 << 4;
+    controls.push_back(new ValueControl("Cue level knob", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Numerator | ValueControl::Denominator | ValueControl::Type, ValueControl::Value, idList, 0, 0, QList<int>(), true));
+
+    // Tempo knob
+    idList.clear();
+    idList << -1 << 0 << -1 << -1 << -1 << 13 << -1 << -1 << 4;
+    controls.push_back(new ValueControl("Tempo knob", ValueControl::Track | ValueControl::Voice | ValueControl::Note | ValueControl::Velocity | ValueControl::Amount | ValueControl::Number | ValueControl::Numerator | ValueControl::Denominator | ValueControl::Type, ValueControl::Value, idList, 0, 0, QList<int>(), true));
+
+    for(int i=0; i<controls.size(); ++i)
+        QObject::connect(controls.at(i),&ValueControl::updateOutputs, this, &AkaiAPC40MkII::updateControlOutputs);
+
     colors << QColor("#000000")
         << QColor("#1E1E1E")
         << QColor("#7F7F7F")
@@ -272,9 +361,10 @@ void AkaiAPC40MkII::lightMatrix(int x, int y, QColor color)
     ValueControl *button = matrixButton(x,y);
     QMidiEvent event = button->setValue(codeFromColor(color));
     midiOut->sendEvent(event);
+    emit matrixLit(x,y,color);
 }
 
-void AkaiAPC40MkII::lightSceneLaunch(int y, QColor color)
+void AkaiAPC40MkII::lightSceneLaunchButton(int y, QColor color)
 {
     if(y<0) return;
     if(y>4) return;
@@ -282,6 +372,7 @@ void AkaiAPC40MkII::lightSceneLaunch(int y, QColor color)
     ValueControl *button = sceneLaunchButton(y);
     QMidiEvent event = button->setValue(codeFromColor(color));
     midiOut->sendEvent(event);
+    emit sceneLaunchButtonLit(y, color);
 }
 
 ValueControl *AkaiAPC40MkII::fader(int index)
@@ -360,4 +451,164 @@ ValueControl *AkaiAPC40MkII::triStateButton(int x)
     if(x > 7) return nullptr;
 
     return controls.at(143 + x);
+}
+
+ValueControl *AkaiAPC40MkII::numberButton(int x)
+{
+    if(x < 0) return nullptr;
+    if(x > 7) return nullptr;
+
+    return controls.at(151 + x);
+}
+
+ValueControl *AkaiAPC40MkII::sButton(int x)
+{
+    if(x < 0) return nullptr;
+    if(x > 7) return nullptr;
+
+    return controls.at(159 + x);
+}
+
+ValueControl *AkaiAPC40MkII::recButton(int x)
+{
+    if(x < 0) return nullptr;
+    if(x > 7) return nullptr;
+
+    return controls.at(167 + x);
+}
+
+ValueControl *AkaiAPC40MkII::bankSelectLeftButton()
+{
+    return controls.at(185);
+}
+
+ValueControl *AkaiAPC40MkII::bankSelectTopButton()
+{
+    return controls.at(186);
+}
+
+ValueControl *AkaiAPC40MkII::bankSelectRightButton()
+{
+    return controls.at(187);
+}
+
+ValueControl *AkaiAPC40MkII::bankSelectBottomButton()
+{
+    return controls.at(188);
+}
+
+ValueControl *AkaiAPC40MkII::shiftButton()
+{
+    return controls.at(189);
+}
+
+ValueControl *AkaiAPC40MkII::bankButton()
+{
+    return controls.at(190);
+}
+
+ValueControl *AkaiAPC40MkII::detailViewButton()
+{
+    return controls.at(191);
+}
+
+ValueControl *AkaiAPC40MkII::clipDevViewButton()
+{
+    return controls.at(192);
+}
+
+ValueControl *AkaiAPC40MkII::devLockButton()
+{
+    return controls.at(193);
+}
+
+ValueControl *AkaiAPC40MkII::devOnOFfButton()
+{
+    return controls.at(194);
+}
+
+ValueControl *AkaiAPC40MkII::bankRightArrowButton()
+{
+    return controls.at(195);
+}
+
+ValueControl *AkaiAPC40MkII::bankLeftArrowButton()
+{
+    return controls.at(196);
+}
+
+ValueControl *AkaiAPC40MkII::deviceRightArrowButton()
+{
+    return controls.at(197);
+}
+
+ValueControl *AkaiAPC40MkII::deviceLeftArrowButton()
+{
+    return controls.at(198);
+}
+
+ValueControl *AkaiAPC40MkII::nudgePlusButton()
+{
+    return controls.at(199);
+}
+
+ValueControl *AkaiAPC40MkII::nudgeMinusButton()
+{
+    return controls.at(200);
+}
+
+ValueControl *AkaiAPC40MkII::userButton()
+{
+    return controls.at(201);
+}
+
+ValueControl *AkaiAPC40MkII::tapTempoButton()
+{
+    return controls.at(202);
+}
+
+ValueControl *AkaiAPC40MkII::metronomeButton()
+{
+    return controls.at(203);
+}
+
+ValueControl *AkaiAPC40MkII::sendsButton()
+{
+    return controls.at(204);
+}
+
+ValueControl *AkaiAPC40MkII::panButton()
+{
+    return controls.at(205);
+}
+
+ValueControl *AkaiAPC40MkII::playButton()
+{
+    return controls.at(206);
+}
+
+ValueControl *AkaiAPC40MkII::recordButton()
+{
+    return controls.at(207);
+}
+
+ValueControl *AkaiAPC40MkII::sessionButton()
+{
+    return controls.at(208);
+}
+
+ValueControl *AkaiAPC40MkII::cueLevelKnob()
+{
+    return controls.at(209);
+}
+
+ValueControl *AkaiAPC40MkII::TempoKnob()
+{
+    return controls.at(210);
+}
+
+void AkaiAPC40MkII::updateControlOutputs(ValueControl *sender, int newValue)
+{
+    QMidiEvent event = sender->setValue(newValue);
+    midiOut->sendEvent(event);
 }

@@ -9,8 +9,10 @@
 
 //! ValueControl state class. Knows how to process incoming midi messages by a `messageFormat` that you provide specifically
 //  for each MIDI controller you want to use.
-class ValueControl
+class ValueControl : public QObject
 {
+    Q_OBJECT
+
     public:
     //! Enum for specifying which bytes should be checked when parsing midi messages. Note that they must be ordered.
     typedef enum
@@ -23,7 +25,8 @@ class ValueControl
         Number = 32,
         Value = 64,
         Numerator = 128,
-        Denominator = 256
+        Denominator = 256,
+        Type = 512
     } MessageFormat;
 
     //! Constructor
@@ -39,8 +42,9 @@ class ValueControl
      * \param outputIdFormat use MessageFormat to construct the format used for creating output messages.
      * \param outputValueFormat use MessageFormat to pass the information which fields should be used to transport output values.
      * \param outputId output Id to check for, in the same order as outputIdFormat.
+     * \param differential set to true if the control sends differential value updates.
      */ 
-    ValueControl(QString name, int inputIdFormat, int inputValueFormat, QList<int> inputId, int outputIdFormat, int outputValueFormat, QList<int> outputId);
+    ValueControl(QString name, int inputIdFormat, int inputValueFormat, QList<int> inputId, int outputIdFormat, int outputValueFormat, QList<int> outputId, bool differential = false);
 
     //! Destructor
     virtual ~ValueControl();
@@ -66,13 +70,20 @@ class ValueControl
     QMidiEvent setValue(int value);
     QString name;
 
+    signals:
+    void valueChanged(ValueControl *sender, int newValue);
+    void outputValueChanged(int newValue);
+    void updateOutputs(ValueControl *sender, int outputValue);
+
     private:
     int value,
+        outputValue,
         inputIdFormat,
         inputValueFormat,
         outputIdFormat,
         outputValueFormat;
     QList<int> inputId,
         outputId;
-    bool on;
+    bool on,
+        differential;
 };

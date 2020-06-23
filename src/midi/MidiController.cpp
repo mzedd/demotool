@@ -18,7 +18,10 @@ QList<MidiController *> MidiController::availableControllers()
         int controllerType = InputController;
         if(availableOutputControllers.values().contains(availableInputControllers.values().at(i)))
             controllerType = InputController | OutputController;
-        QString outputKey = availableOutputControllers.keys().at(availableOutputControllers.values().indexOf(availableInputControllers.values().at(i)));
+        QString inputControllerName = availableInputControllers.values().at(i);
+        if(inputControllerName == "KeyStep Pro MIDI IN")
+            inputControllerName = "KeyStep Pro MIDI OUT";
+        QString outputKey = availableOutputControllers.keys().at(availableOutputControllers.values().indexOf(inputControllerName));
         if(availableInputControllers.values().at(i) == "APC40 mkII")
         {
             midiControllerList.push_back(
@@ -91,18 +94,29 @@ void MidiController::inputEventReceived(quint32 message, quint32 timing)
     for(int i=0; i<controls.size(); ++i)
     {
         if(controls.at(i)->isResponsible(event))
+        {
             controls.at(i)->changeState(event);
+            emit valueControlUpdated(controls.at(i));
+        }
     }
 
-    // // qDebug() << name << ":" << message << timing;
-    // qDebug() << name << ":" 
-    //     << event.track()
-    //     << event.voice()
-    //     << event.note() 
-    //     << event.velocity() 
-    //     << event.amount()
-    //     << event.number()
-    //     << event.value()
-    //     << event.numerator()
-    //     << event.denominator();
+    // qDebug() << name << ":" << message << timing;
+    qDebug() << name << ":" 
+        << event.track()
+        << event.voice()
+        << event.note() 
+        << event.velocity() 
+        << event.amount()
+        << event.number()
+        << event.value()
+        << event.numerator()
+        << event.denominator()
+        << event.type();
+}
+
+ValueControl *MidiController::controlByName(QString name)
+{
+    for(int i=0; i<controls.size(); ++i)
+        if(controls.at(i)->name == name) return controls.at(i);
+    return nullptr;
 }
