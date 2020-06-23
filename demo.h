@@ -3,13 +3,15 @@
 
 #include <QOpenGLShaderProgram>
 #include "scene/Scene.h"
+#include "demo/Clip.h"
 
-#include <QVector>
+#include <vector>
 
 class Demo
 {
 private:
     std::vector<Scene> sceneList;
+    std::vector<Clip> clipList;
     std::vector<QOpenGLShaderProgram*> shaderList;
 
     Demo();
@@ -22,10 +24,18 @@ public:
     Demo& operator=(Demo&&) = delete;
 
     static Demo& instance();
+
     Scene& addScene();
     void addScene(Scene scene);
-    QOpenGLShaderProgram *addShader(const QString &vertShaderFile, const QString& fragShaderFile);
     Scene* getScenePointer(int id);
+
+    void addClip();
+    Clip &getClip(int id);
+    bool removeClips(int id, int count);
+    const size_t clipCount() const;
+    bool swapClips(int idA, int idB);
+
+    QOpenGLShaderProgram *addShader(const QString &vertShaderFile, const QString& fragShaderFile);
     QOpenGLShaderProgram &getShaderProgram(int id);
 };
 

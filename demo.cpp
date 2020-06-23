@@ -74,6 +74,40 @@ Scene *Demo::getScenePointer(int id)
     return &sceneList[id];
 }
 
+void Demo::addClip()
+{
+    clipList.push_back(Clip());
+}
+
+Clip &Demo::getClip(int id)
+{
+    return clipList[id];
+}
+
+bool Demo::removeClips(int id, int count) {
+    if(id+count < clipCount()) {
+        clipList.erase(clipList.begin()+id, clipList.begin()+id+count);
+        return true;
+    }
+    return false;
+}
+
+const size_t Demo::clipCount() const
+{
+    return clipList.size();
+}
+
+bool Demo::swapClips(int idA, int idB)
+{
+    if(idA < clipCount() && idB < clipCount()) {
+        Clip tmp = clipList[idA];
+        clipList[idA] = clipList[idB];
+        clipList[idB] = clipList[idA];
+        return true;
+    }
+    return false;
+}
+
 QOpenGLShaderProgram &Demo::getShaderProgram(int id)
 {
     return *shaderList[id];

@@ -1,19 +1,18 @@
 #include "timelinemodel.h"
 
+#include "demo.h"
+
 TimelineModel::TimelineModel(QObject *parent)
     : QAbstractListModel(parent)
 {
 }
 
 TimelineModel::~TimelineModel() {
-    for(int i = 0; i < clipList.size(); i++) {
-        delete clipList[i];
-    }
 }
 
 int TimelineModel::rowCount(const QModelIndex&) const
 {
-    return clipList.size();
+    return static_cast<int>(Demo::instance().clipCount());
 }
 
 int TimelineModel::columnCount(const QModelIndex&) const
@@ -28,14 +27,14 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         switch(index.column()) {
         case 0:
-            return QString(clipList[index.row()]->getName());
+            return QString(Demo::instance().getClip(index.row()).getName());
             break;
         case 1:
-            return QVariant(clipList[index.row()]->getDuration());
+            return QVariant(Demo::instance().getClip(index.row()).getDuration());
             break;
         case 2:
-            if(clipList[index.row()]->getScene() != nullptr) {
-                return clipList[index.row()]->getScene()->name;
+            if(Demo::instance().getClip(index.row()).getScene() != nullptr) {
+                return Demo::instance().getClip(index.row()).getScene()->name;
             }
             return QVariant(QString());
             break;
@@ -45,8 +44,8 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void TimelineModel::addClip(Clip *clip) {
-    clipList.append(clip);
+void TimelineModel::addClip() {
+    Demo::instance().addClip();
 }
 
 Qt::DropActions TimelineModel::supportedDropActions() const
@@ -56,33 +55,21 @@ Qt::DropActions TimelineModel::supportedDropActions() const
 
 bool TimelineModel::swapRows(int i, int j)
 {
-    Clip *tmp;
-
-    if(i >= 0 && i < clipList.size() && j >= 0 && j < clipList.size()) {
-        tmp = clipList[i];
-        clipList[i] = clipList[j];
-        clipList[j] = tmp;
-        return true;
-    }
-
-    return false;
+    return Demo::instance().swapClips(i,j);
 }
 
 bool TimelineModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     for(int i = 0; i < count; i++) {
-        clipList.append(new Clip());
+        Demo::instance().addClip();
     }
     return true;
 }
 
 bool TimelineModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-    if(!clipList.empty() && row+count <= clipList.size()) {
-        for(int i = 0; i < count; i++) {
-            delete clipList[row+i];
-        }
-        clipList.remove(row, count);
+    if(Demo::instance().clipCount() > 0 && row+count <= Demo::instance().clipCount()) {
+        Demo::instance().removeClips(row, count);
         return true;
     }
     return false;
@@ -97,10 +84,10 @@ bool TimelineModel::setData(const QModelIndex &index, const QVariant &value, int
     if(role == Qt::EditRole) {
         switch(index.column()) {
         case 0:
-            clipList[index.row()]->setName(value.toString());
+            Demo::instance().getClip(index.row()).setName(value.toString());
             break;
         case 1:
-            clipList[index.row()]->setDuration(value.toFloat());
+            Demo::instance().getClip(index.row()).setDuration(value.toFloat());
             break;
         }
 
