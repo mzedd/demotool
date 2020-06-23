@@ -16,17 +16,22 @@ QList<MidiController *> MidiController::availableControllers()
     for(int i=0; i<availableInputControllers.size(); ++i)
     {
         int controllerType = InputController;
-        if(availableOutputControllers.keys().contains(availableInputControllers.keys().at(i)))
+        if(availableOutputControllers.values().contains(availableInputControllers.values().at(i)))
             controllerType = InputController | OutputController;
+        QString outputKey = availableOutputControllers.keys().at(availableOutputControllers.values().indexOf(availableInputControllers.values().at(i)));
         if(availableInputControllers.values().at(i) == "APC40 mkII")
+        {
             midiControllerList.push_back(
                 new AkaiAPC40MkII(availableInputControllers.keys().at(i), 
+                    outputKey, 
                     availableInputControllers.values().at(i), 
                     controllerType)
                 );
+        }
         else
             midiControllerList.push_back(
                 new MidiController(availableInputControllers.keys().at(i), 
+                    outputKey,
                     availableInputControllers.values().at(i), 
                     controllerType)
                 );
@@ -34,9 +39,10 @@ QList<MidiController *> MidiController::availableControllers()
     return midiControllerList;
 }
 
-MidiController::MidiController(QString _key, QString _name, int _type)
+MidiController::MidiController(QString _inputKey, QString _outputKey, QString _name, int _type)
     : QObject()
-    , key(_key)
+    , inputKey(_inputKey)
+    , outputKey(_outputKey)
     , name(_name)
     , type(_type)
     , midiIn(nullptr)
@@ -45,9 +51,9 @@ MidiController::MidiController(QString _key, QString _name, int _type)
     if(type & InputController)
     {
         midiIn = new QMidiIn();
-        if(!midiIn->connect(key))
+        if(!midiIn->connect(inputKey))
         {
-            qDebug() << "Could not connect to midi in" << key;
+            qDebug() << "Could not connect to midi in" << inputKey;
         }
         midiIn->start();
         connect(midiIn, SIGNAL(midiEvent(quint32, quint32)), this, SLOT(inputEventReceived(quint32, quint32)));
@@ -55,7 +61,10 @@ MidiController::MidiController(QString _key, QString _name, int _type)
     if(type & OutputController)
     {
         midiOut = new QMidiOut();
-        midiOut->connect(key);
+        if(!midiOut->connect(outputKey))
+        {
+            qDebug() << "Could not connect to midi out" << outputKey;
+        }
     }
 }
 
@@ -85,15 +94,15 @@ void MidiController::inputEventReceived(quint32 message, quint32 timing)
             controls.at(i)->changeState(event);
     }
 
-    // qDebug() << name << ":" << message << timing;
-    qDebug() << name << ":" 
-        << event.track()
-        << event.voice()
-        << event.note() 
-        << event.velocity() 
-        << event.amount()
-        << event.number()
-        << event.value()
-        << event.numerator()
-        << event.denominator();
+    // // qDebug() << name << ":" << message << timing;
+    // qDebug() << name << ":" 
+    //     << event.track()
+    //     << event.voice()
+    //     << event.note() 
+    //     << event.velocity() 
+    //     << event.amount()
+    //     << event.number()
+    //     << event.value()
+    //     << event.numerator()
+    //     << event.denominator();
 }

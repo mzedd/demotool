@@ -13,7 +13,8 @@ int main(int argc, char *argv[])
 
     QList<MidiController *> availableControllers = MidiController::availableControllers();
     for(int i=0; i<availableControllers.size(); ++i)
-        qDebug() << availableControllers.at(i)->key 
+        qDebug() << availableControllers.at(i)->inputKey
+            << availableControllers.at(i)->outputKey 
             << availableControllers.at(i)->name
             << (availableControllers.at(i)->type & MidiController::InputController ? "Input":"")
             << (availableControllers.at(i)->type & MidiController::OutputController ? "Output":"");
@@ -24,5 +25,10 @@ int main(int argc, char *argv[])
     QSurfaceFormat::setDefaultFormat(format);
 
     w.show();
-    return a.exec();
+    int result = a.exec();
+
+    for(int i=0; i<availableControllers.size(); ++i)
+        delete availableControllers.at(i);
+
+    return result;
 }
