@@ -24,9 +24,9 @@ public:
     static Demo& instance();
     Scene& addScene();
     void addScene(Scene scene);
-    size_t addShader();
+    QOpenGLShaderProgram *addShader(const QString &vertShaderFile, const QString& fragShaderFile);
     Scene* getScenePointer(int id);
-    QOpenGLShaderProgram &getShaderPointer(int id);
+    QOpenGLShaderProgram &getShaderProgram(int id);
 };
 
 #endif // DEMO_H
