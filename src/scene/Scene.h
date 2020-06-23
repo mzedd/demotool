@@ -15,13 +15,12 @@ private:
     std::vector<SceneObject*> sceneObjectList;
     std::vector<Camera> cameraList;
     std::vector<ILightSource*> lightSourceList;
-    Camera* activeCamera;
     QVector3D backgroundColor;
 public:
     Scene();
     Scene(QVector3D backgroundColor);
     ~Scene();
-    void render();
+    void render(float time, Camera* camera);
     void addSceneObject(SceneObject *sceneObject);
     void addCamera(Camera& camera);
     void addLightSource(ILightSource* lightSource);
@@ -30,10 +29,7 @@ public:
     void setBackgroundColor(QVector3D color);
 
     SceneObject &getSceneObject(int id);
-
-
     QString name;
-
 };
 
 #endif // SCENE_H

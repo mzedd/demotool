@@ -15,13 +15,14 @@ private:
     QString name;
 public:
     Clip();
-    Clip(QString name);
     void attachScene(Scene *scene);
     void attachCamera(int cameraNumber);
     void setDuration(const float duration);
     float getDuration();
+    void render(float time) const;
     QString getName() const;
     Scene* getScene() const;
+    Camera &getCamera();
     void setName(const QString name);
 };
 

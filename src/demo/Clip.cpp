@@ -3,17 +3,10 @@
 #include <iostream>
 
 Clip::Clip()
-    : Clip("clip")
-{
-    duration = 10.0f;
-}
-
-Clip::Clip(QString name)
     : scene(nullptr),
       camera(nullptr),
-      duration(0.0f),
-      name(name)
-{
+      duration(10.0f),
+      name("default") {
 }
 
 void Clip::attachScene(Scene *scene) {
@@ -36,6 +29,12 @@ float Clip::getDuration() {
     return duration;
 }
 
+void Clip::render(float time) const
+{
+    if(camera != NULL)
+        scene->render(time, camera);
+}
+
 QString Clip::getName() const {
     return name;
 }
@@ -46,6 +45,11 @@ Scene* Clip::getScene() const
         return scene;
     }
     return nullptr;
+}
+
+Camera &Clip::getCamera()
+{
+    return *camera;
 }
 
 void Clip::setName(const QString name) {
