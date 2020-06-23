@@ -6,7 +6,7 @@
 
 #include "ValueControl.h"
 
-class MidiController : QObject
+class MidiController : public QObject
 {
     Q_OBJECT
 
@@ -40,6 +40,11 @@ class MidiController : QObject
 
     QMidiIn *midiIn;
     QMidiOut *midiOut;
+
+    ValueControl *controlByName(QString name);
+
+    signals:
+    void valueControlUpdated(ValueControl *control);
 
     private slots:
     //! Slot for handling midi events.
