@@ -22,10 +22,9 @@ public:
     ~Scene();
     void render(float time, Camera* camera);
     void addSceneObject(SceneObject *sceneObject);
-    void addCamera(Camera& camera);
-    void addLightSource(ILightSource* lightSource);
+    Camera& addCamera();
+    void addLightSource();
     Camera& getCamera(int cameraNumber);
-    void setEditorCamera();
     void setBackgroundColor(QVector3D color);
 
     SceneObject &getSceneObject(int id);

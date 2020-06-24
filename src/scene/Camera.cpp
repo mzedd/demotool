@@ -89,6 +89,7 @@ void Camera::addScrollOffset(float offset) {
 
 void Camera::updateProjectionMatrix(const int width, const int height)
 {
+    projection.setToIdentity();
     projection.perspective(qDegreesToRadians(fov), width/(double)height, 0.1, 100.0f);
 }
 

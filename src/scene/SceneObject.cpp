@@ -20,26 +20,18 @@ void SceneObject::render() {
 
     if(shaderProgram) {
         shaderProgram->bind();
+        shaderProgram->setUniformValue("model", QMatrix4x4(transform));
+        shaderProgram->setUniformValue("material.albedo", material.albedo);
+        shaderProgram->setUniformValue("material.metallic", material.metallic);
+        shaderProgram->setUniformValue("material.roughness", material.roughness);
+        shaderProgram->setUniformValue("material.albedoTexture", false);
 
-        int location = shaderProgram->uniformLocation("model");
-        shaderProgram->setUniformValue(location, QMatrix4x4(transform));
-
-        location = shaderProgram->uniformLocation("material.albedo");
-        shaderProgram->setUniformValue(location, material.albedo);
-
-        location = shaderProgram->uniformLocation("material.metallic");
-        shaderProgram->setUniformValue(location, material.metallic);
-
-        location = shaderProgram->uniformLocation("material.roughness");
-        shaderProgram->setUniformValue(location, material.roughness);
-
-        location = shaderProgram->uniformLocation("material.albedoTexture");
-        shaderProgram->setUniformValue(location, false);
     } else {
         qDebug() << "No Shader attached";
     }
 
     geometry->render();
+    qDebug() << "scene object rendernd";
 }
 
 Material& SceneObject::getMaterial() {

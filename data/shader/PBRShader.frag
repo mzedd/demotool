@@ -22,6 +22,7 @@ struct LightSource {
     vec3 direction;
 };
 
+uniform vec2 iResolution;
 uniform vec3 camPos;
 uniform int lightCount;
 uniform LightSource lightSource[1];
@@ -67,7 +68,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 }
 
 void main() {
-    vec3 albedo;
+    /*vec3 albedo;
     if(material.albedoTexture) {
         albedo = texture(texture1, 5.0*fs_in.TexCoord).xyz;
     } else {
@@ -111,9 +112,14 @@ void main() {
 	vec3 color = ambient + Lo;
 
 	color = color / (color + vec3(1.0)); // HDR to LDR correction
-	color = pow(color, vec3(1.0 / 2.2)); // gamma correction
+    color = pow(color, vec3(1.0 / 2.2)); // gamma correction*/
 
-    color = vec3(1.0, 0.0, 0.0);
+
+    vec2 uv = (gl_FragCoord.xy/iResolution-0.5)*vec2(iResolution.x/iResolution.y, 1.0);
+
+    vec3 color = vec3(1.0, 0.0, 0.0);
+
+    color *= smoothstep(0.5, 0.5+0.001, length(uv));
 
     FragColor = vec4(color, 1.0);
 }

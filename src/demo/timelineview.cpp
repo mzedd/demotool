@@ -8,6 +8,8 @@
 #include <QRubberBand>
 #include <QHBoxLayout>
 
+#include "demo.h"
+
 constexpr int PIXELS_PER_SECOND = 10;
 constexpr int TIMEAXIS_HEIGHT = 30;
 constexpr int TIMEAXIS_TICK_PER_SECOND = 1;
@@ -195,7 +197,7 @@ void TimelineView::mousePressEvent(QMouseEvent *event)
             setCurrentIndex(index);
             if(index.isValid()) {
                 setCursor(Qt::ClosedHandCursor);
-                emit clipSelectionChanged();
+                emit clipSelectionChanged(&Demo::instance().getClip(index.row()));
             }
             viewport()->update();
         }
@@ -234,7 +236,7 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
             QModelIndex index = indexAt(event->pos());
             if(index != currentIndex()) {
                 model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
-                emit clipSelectionChanged();
+                emit clipSelectionChanged(&Demo::instance().getClip(index.row()));
             }
             setCursor(Qt::ArrowCursor);
             viewport()->update();

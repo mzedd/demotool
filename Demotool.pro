@@ -81,3 +81,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 include(thirdparty/QMidi/src/QMidi.pri)
+
+DISTFILES += \
+    data/shader/loading.frag

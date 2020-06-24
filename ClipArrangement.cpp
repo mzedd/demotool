@@ -17,7 +17,8 @@ ClipArrangement::ClipArrangement(QWidget *parent) :
     ui->timelineView->setModel(model);
 
     connect(ui->timelineView, SIGNAL(zoomChanged(QString)), ui->lbl_zoom, SLOT(setText(QString)));
-    connect(ui->timelineView, SIGNAL(clipSelectionChanged()), this, SLOT(updateInspector()));
+    connect(ui->timelineView, SIGNAL(clipSelectionChanged(Clip*)), this, SLOT(updateInspector()));
+    connect(ui->timelineView, SIGNAL(clipSelectionChanged(Clip*)), ui->openGLWidget, SLOT(clipSelectionChanged(Clip*)));
 }
 
 ClipArrangement::~ClipArrangement()

@@ -11,6 +11,7 @@ class Clip;
 
 class OpenGLWindow : public QOpenGLWidget, protected QOpenGLFunctions
 {
+    Q_OBJECT
 private:
     Clip* currentClip;
 
@@ -26,6 +27,9 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
+
+protected slots:
+    void clipSelectionChanged(Clip *clip);
 };
 
 #endif // OPENGLWINDOW_H

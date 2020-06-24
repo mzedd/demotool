@@ -2,6 +2,9 @@
 
 #include <QVector3D>
 #include <QOpenGLFunctions>
+#include <QDebug>
+
+#include <QtMath>
 
 Plane::Plane() :
     Geometry(1),
@@ -19,11 +22,35 @@ Plane::Plane(unsigned char resolution, float width, float height) :
 }
 
 void Plane::generate() {
-    vao.create();
-    vbo.create();
-    ebo.create();
+    QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
-    int verticeCount = (2+resolution)*(2+resolution);
+
+    GLfloat const vertices[] = {
+        -1.f, -1.f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        -1.f, 1.f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        1.f, -1.f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        -1.f, 1.f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        1.f, -1.f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+        1.f, 1.f, 0.f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    vbo.create();
+    vbo.bind();
+    vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+    vbo.allocate(vertices, sizeof(vertices));
+
+    vao.create();
+    vao.bind();
+
+    f->glEnableVertexAttribArray(0);
+    f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
+    f->glEnableVertexAttribArray(1);
+    f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3 * sizeof(float)));
+    f->glEnableVertexAttribArray(2);
+    f->glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6 * sizeof(float)));
+
+
+    /*int verticeCount = (2+resolution)*(2+resolution);
     float* data = new float[8*verticeCount];
     int arrayIndex = 0;
 
@@ -66,22 +93,32 @@ void Plane::generate() {
     vbo.allocate(data, verticeCount*8*sizeof(float));
     ebo.bind();
     ebo.allocate(indices, indexCount * sizeof(unsigned int));
-    /*glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6 * sizeof(float)));
-*/
+    f->glEnableVertexAttribArray(0);
+    f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)0);
+    f->glEnableVertexAttribArray(1);
+    f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(3 * sizeof(float)));
+    f->glEnableVertexAttribArray(2);
+    f->glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), (void*)(6 * sizeof(float)));
+
     delete[] data;
-    delete[] indices;
+    delete[] indices;*/
 }
 
 void Plane::render() {
     QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
 
     vao.bind();
-    for(int i = 0; i < resolution+2; i++) {
+    vbo.bind();
+    //ebo.bind();
+
+    /*for(int i = 0; i < resolution+2; i++) {
         f->glDrawElements(GL_TRIANGLE_STRIP, (resolution+2)*2, GL_UNSIGNED_INT, (void*)((resolution+2)*2*i*sizeof(unsigned int)));
-    }
+    }*/
+    f->glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    vao.release();
+    vbo.release();
+    //ebo.release();
+
+    qDebug() << "plane rendered";
 }

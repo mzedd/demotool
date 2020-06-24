@@ -31,8 +31,10 @@ float Clip::getDuration() {
 
 void Clip::render(float time) const
 {
-    if(camera != NULL)
+    if(camera) {
         scene->render(time, camera);
+        qDebug() << "scene renderd";
+    }
 }
 
 QString Clip::getName() const {

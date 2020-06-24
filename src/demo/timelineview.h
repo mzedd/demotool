@@ -7,6 +7,8 @@
 #include <QGraphicsView>
 #include <QEvent>
 
+class Clip;
+
 class TimelineView : public QAbstractItemView
 {
     Q_OBJECT
@@ -52,7 +54,7 @@ private:
 
 signals:
     void zoomChanged(QString text);
-    void clipSelectionChanged();
+    void clipSelectionChanged(Clip *clip);
 
 protected slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,

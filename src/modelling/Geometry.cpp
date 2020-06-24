@@ -4,7 +4,7 @@ Geometry::Geometry(unsigned char resolution) :
 	vao(0),
     vbo(QOpenGLBuffer::Type::VertexBuffer),
     ebo(QOpenGLBuffer::Type::IndexBuffer),
-	resolution(resolution) {
+    resolution(resolution) {
 }
 
 Geometry::~Geometry() {
