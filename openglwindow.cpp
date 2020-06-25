@@ -6,13 +6,14 @@
 #include "src/modelling/Plane.h"
 
 #include <QtMath>
+#include <QTime>
 
 OpenGLWindow::OpenGLWindow(QWidget *parent) :
     QOpenGLWidget(parent),
     currentClip(nullptr),
-    lastFrameTime(0.0f),
-    deltaTime(0.0f)
+    demoTime(0.0f)
 {
+    run = false;
     setFocusPolicy(Qt::StrongFocus);
     timer.start();
 }
@@ -50,13 +51,20 @@ void OpenGLWindow::initializeGL() {
     plane->transform.rotate(45.0f, Qt::Axis::XAxis);
 
     scene.addSceneObject(plane);
+
+    glViewport(0, 0, width(), height());
+
+    Demo::instance().getShaderProgram(0).setUniformValue("iResolution", QVector2D(width(),height()));
+
+    if(currentClip) {
+        currentClip->getCamera().updateProjectionMatrix(width(), height());
+    }
 }
 
 void OpenGLWindow::resizeGL(int w, int h) {
     glViewport(0, 0, w, h);
 
     Demo::instance().getShaderProgram(0).setUniformValue("iResolution", QVector2D(w,h));
-    Demo::instance().getShaderProgram(0).setUniformValue("iProgress", 0.5f);
 
     if(currentClip) {
         currentClip->getCamera().updateProjectionMatrix(w, h);
@@ -67,20 +75,42 @@ void OpenGLWindow::paintGL() {
     //glClearColor(.0f, 0.0f, 0.0f, 1.0f);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    float currentTime = static_cast<float>(timer.elapsed()) * 0.001f;
-    deltaTime = currentTime - lastFrameTime;
-    lastFrameTime = currentTime;
+    if(run) {
+        float currentTime = static_cast<float>(timer.elapsed()) * 0.001f;
+        demoTime += (currentTime - lastFrameTime);
+        emit timeChanged(demoTime);
+        lastFrameTime = currentTime;
+        qDebug() << demoTime << " current time" << currentTime << "lastFramTime: " << lastFrameTime;
+    }
+
 
     if(currentClip) {
-        currentClip->render(currentTime);
+        currentClip->render(demoTime);
         qDebug() << "clip renderd";
     }
 
     qDebug() << "run";
+
+    if(run) {
+        update();
+    }
 }
 
 void OpenGLWindow::clipSelectionChanged(Clip *clip)
 {
     currentClip = clip;
+    update();
+}
+
+void OpenGLWindow::togglePlay()
+{
+    run = !run;
+    lastFrameTime = static_cast<float>(timer.elapsed()) * 0.001f;
+    update();
+}
+
+void OpenGLWindow::cursorChanged(float time)
+{
+    demoTime = time;
     update();
 }

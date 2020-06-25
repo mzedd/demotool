@@ -23,6 +23,7 @@ private:
 
 private slots:
     void updateInspector();
+    void updateTime(float time);
 };
 
 #endif // CLIPARRANGEMENT_H

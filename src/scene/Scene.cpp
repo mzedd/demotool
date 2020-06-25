@@ -50,6 +50,7 @@ void Scene::render(float time, Camera* camera) {
         (*it)->shaderProgram->setUniformValue("projection", camera->getProjectionMatrix());
         (*it)->shaderProgram->setUniformValue("view", camera->getViewMatrix());
         (*it)->shaderProgram->setUniformValue("camPos", camera->position);
+        (*it)->shaderProgram->setUniformValue("iProgress", time*0.1f);
 
         qDebug() << camera->position;
 

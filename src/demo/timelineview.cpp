@@ -190,7 +190,7 @@ void TimelineView::mousePressEvent(QMouseEvent *event)
             dragState = DragState::cursorDrag;
         } else if(event->pos().y() <= TIMEAXIS_HEIGHT) {
             qDebug() << "scrubb";
-            setCursorPosition(event->pos().x());
+            emit cursorUpdated(setCursorPosition(event->pos().x()));
             viewport()->update();
         } else {
             qDebug() << "select";
@@ -222,7 +222,7 @@ void TimelineView::mouseMoveEvent(QMouseEvent* event)
         }
         break;
     case cursorDrag:
-        setCursorPosition(p.x());
+        emit cursorUpdated(setCursorPosition(p.x()));
         viewport()->update();
         break;
     }
@@ -247,7 +247,7 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
             break;
         case cursorDrag:
             dragState = DragState::none;
-            setCursorPosition(event->x());
+            emit cursorUpdated(setCursorPosition(event->x()));
             break;
         }
         break;
@@ -258,7 +258,7 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
 
 void TimelineView::wheelEvent(QWheelEvent *event)
 {
-    zoom += SCROLL_TO_ZOOM_SCALE*event->delta();
+    zoom += SCROLL_TO_ZOOM_SCALE*event->angleDelta().x();
     zoom = qBound(MIN_ZOOM, zoom, MAX_ZOOM);
     viewport()->update();
     emit zoomChanged(QString("Zoom: %1 \%").arg((int)(zoom*100.0f),3));
@@ -288,10 +288,11 @@ void TimelineView::contextMenuEvent(QContextMenuEvent *event)
     menu.show();
 }
 
-void TimelineView::setCursorPosition(const int position)
+float TimelineView::setCursorPosition(const int position)
 {
     cursor->setX(qBound(0, position, width()-CURSOR_WIDTH));
     cursor->setWidth(CURSOR_WIDTH);
+    return static_cast<float>(position);
 }
 
 void TimelineView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
@@ -313,4 +314,10 @@ void TimelineView::removeClip()
         }
         viewport()->update();
     }
+}
+
+void TimelineView::updateCursor(float time)
+{
+    setCursorPosition(static_cast<int>(time));
+    viewport()->update();
 }

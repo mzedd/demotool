@@ -40,7 +40,7 @@ private:
     QRect getClipRectangle(QModelIndex &index);
     QRect *cursor;
 
-    void setCursorPosition(const int position);
+    float setCursorPosition(const int position);
 
     float zoom;
     float time;
@@ -55,6 +55,7 @@ private:
 signals:
     void zoomChanged(QString text);
     void clipSelectionChanged(Clip *clip);
+    void cursorUpdated(float time);
 
 protected slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,
@@ -62,6 +63,7 @@ protected slots:
 public slots:
     void addClip();
     void removeClip();
+    void updateCursor(float time);
 
 };
 
