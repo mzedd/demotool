@@ -50,12 +50,16 @@ private:
         cursorDrag,
     };
 
+    QMenu* menu;
+    QAction* addClipAct;
+
     DragState dragState;
 
 signals:
     void zoomChanged(QString text);
     void clipSelectionChanged(Clip *clip);
     void cursorUpdated(float time);
+    void activeClipChanged(Clip *clip);
 
 protected slots:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight,
@@ -64,6 +68,9 @@ public slots:
     void addClip();
     void removeClip();
     void updateCursor(float time);
+
+private:
+    float getClipStartTime(const QModelIndex& index) const;
 
 };
 

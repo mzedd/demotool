@@ -27,8 +27,10 @@ void OpenGLWindow::initializeGL() {
     initializeOpenGLFunctions();
 
     QOpenGLShaderProgram *program = Demo::instance().addShader("data/shader/shader.vert", "data/shader/loading.frag");
+    QOpenGLShaderProgram *program1 = Demo::instance().addShader("data/shader/shader.vert", "data/shader/voronoi.frag");
 
     program->setObjectName("default shader");
+    program1->setObjectName("moin");
 
     // testing
     Demo::instance().addClip();
@@ -52,6 +54,28 @@ void OpenGLWindow::initializeGL() {
 
     scene.addSceneObject(plane);
 
+    // testing
+    Demo::instance().addClip();
+    Clip &clip1 = Demo::instance().getClip(1);
+    clip1.setName("Erster");
+    clip1.setDuration(50.0f);
+
+    Scene &scene1 = Demo::instance().addScene();
+    Camera &camera1 = scene1.addCamera();
+    camera1.position = QVector3D(1.0f, 1.0f, 5.0f);
+    scene1.name = "test";
+    scene1.setBackgroundColor(QVector3D(0.0f, 1.0f, 0.0f));
+    scene1.addLightSource();
+
+    clip.attachScene(&scene1);
+    clip.attachCamera(0);
+
+    SceneObject *plane1 = new SceneObject(new Plane(20, 10.0f, 10.0f), program1);
+    plane1->geometry->generate();
+    plane1->transform.rotate(45.0f, Qt::Axis::XAxis);
+
+    scene1.addSceneObject(plane1);
+
     glViewport(0, 0, width(), height());
 
     Demo::instance().getShaderProgram(0).setUniformValue("iResolution", QVector2D(width(),height()));
@@ -65,6 +89,7 @@ void OpenGLWindow::resizeGL(int w, int h) {
     glViewport(0, 0, w, h);
 
     Demo::instance().getShaderProgram(0).setUniformValue("iResolution", QVector2D(w,h));
+    Demo::instance().getShaderProgram(1).setUniformValue("iResolution", QVector2D(w,h));
 
     if(currentClip) {
         currentClip->getCamera().updateProjectionMatrix(w, h);
@@ -85,7 +110,7 @@ void OpenGLWindow::paintGL() {
 
 
     if(currentClip) {
-        currentClip->render(demoTime);
+        currentClip->render(demoTime/currentClip->getDuration());
         qDebug() << "clip renderd";
     }
 
@@ -98,7 +123,10 @@ void OpenGLWindow::paintGL() {
 
 void OpenGLWindow::clipSelectionChanged(Clip *clip)
 {
+    qDebug() << "current clip changed";
+
     currentClip = clip;
+
     update();
 }
 
@@ -107,6 +135,7 @@ void OpenGLWindow::togglePlay()
     run = !run;
     lastFrameTime = static_cast<float>(timer.elapsed()) * 0.001f;
     update();
+    qDebug() << "called";
 }
 
 void OpenGLWindow::cursorChanged(float time)

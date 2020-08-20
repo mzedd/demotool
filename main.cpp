@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
             << (availableControllers.at(i)->type & MidiController::OutputController ? "Output":"");*/
 
     QSurfaceFormat format;
-    format.setVersion(4,6);
+    format.setVersion(3,3);
     format.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(format);
 

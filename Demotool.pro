@@ -83,4 +83,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 include(thirdparty/QMidi/src/QMidi.pri)
 
 DISTFILES += \
-    data/shader/loading.frag
+    data/shader/loading.frag \
+    data/shader/voronoi.frag

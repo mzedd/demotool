@@ -32,6 +32,13 @@ TimelineView::TimelineView(QWidget *parent)
     dragState = DragState::none;
 
     setMouseTracking(true);
+
+    menu = new QMenu(this);
+
+    addClipAct = new QAction("AddClip", this);
+    connect(addClipAct, &QAction::triggered, this, &TimelineView::addClip);
+
+    menu->addAction(addClipAct);
 }
 
 void TimelineView::paintEvent(QPaintEvent*) {
@@ -82,7 +89,6 @@ void TimelineView::paintEvent(QPaintEvent*) {
         } else {
             painter.setBrush(Qt::blue);
         }
-
         clip = visualRect(index);
         painter.drawRect(clip);
 
@@ -97,15 +103,7 @@ QRect TimelineView::visualRect(const QModelIndex &index) const
 {
     QRect clip = QRect();
 
-    float offset = 0.0f;
-    for(int i = 0; i < model()->rowCount(); i++) {
-        if(index.row() == i) {
-            break;
-        } else {
-            offset += model()->data(model()->index(i, 1), Qt::DisplayRole).toFloat();
-        }
-    }
-
+    float offset = getClipStartTime(index);
     clip.setX(offset*zoom);
     clip.setY(TIMEAXIS_HEIGHT+2);
     clip.setHeight(50);
@@ -258,7 +256,7 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
 
 void TimelineView::wheelEvent(QWheelEvent *event)
 {
-    zoom += SCROLL_TO_ZOOM_SCALE*event->angleDelta().x();
+    zoom += SCROLL_TO_ZOOM_SCALE*event->angleDelta().y();
     zoom = qBound(MIN_ZOOM, zoom, MAX_ZOOM);
     viewport()->update();
     emit zoomChanged(QString("Zoom: %1 \%").arg((int)(zoom*100.0f),3));
@@ -282,10 +280,7 @@ void TimelineView::keyPressEvent(QKeyEvent *event)
 
 void TimelineView::contextMenuEvent(QContextMenuEvent *event)
 {
-    QMenu menu(this);
-    menu.addAction("Add Scene");
-
-    menu.show();
+    menu->exec(event->globalPos());
 }
 
 float TimelineView::setCursorPosition(const int position)
@@ -302,6 +297,8 @@ void TimelineView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 
 void TimelineView::addClip()
 {
+
+    qDebug() << "Adding Clip";
     model()->insertRow(model()->rowCount());
     viewport()->update();
 }
@@ -320,4 +317,24 @@ void TimelineView::updateCursor(float time)
 {
     setCursorPosition(static_cast<int>(time));
     viewport()->update();
+
+    QModelIndex index = indexAt(QPoint(cursor->x(), TIMEAXIS_HEIGHT+5.0f));
+
+    if(index.isValid())
+        emit activeClipChanged(&Demo::instance().getClip(index.row()));
+    else
+        emit activeClipChanged(nullptr);
+}
+
+float TimelineView::getClipStartTime(const QModelIndex &index) const
+{
+    float offset = 0.0f;
+    for(int i = 0; i < model()->rowCount(); i++) {
+        if(index.row() == i) {
+            break;
+        } else {
+            offset += model()->data(model()->index(i, 1), Qt::DisplayRole).toFloat();
+        }
+    }
+    return offset;
 }

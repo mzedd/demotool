@@ -39,7 +39,6 @@ void Plane::generate() {
     vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
     vbo.allocate(vertices, sizeof(vertices));
 
-    vao.create();
     vao.bind();
 
     f->glEnableVertexAttribArray(0);

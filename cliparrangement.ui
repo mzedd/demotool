@@ -83,7 +83,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="inspector_layout" stretch="0,0,0,0,0">
+    <layout class="QVBoxLayout" name="inspector_layout" stretch="0,0,0,0,0,0">
      <property name="spacing">
       <number>0</number>
      </property>
@@ -147,6 +147,16 @@
          <width>200</width>
          <height>0</height>
         </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="le_clipDuration">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
       </widget>
      </item>

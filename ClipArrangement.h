@@ -21,9 +21,16 @@ private:
     Ui::ClipArrangement *ui;
     TimelineModel *model;
 
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+
+signals:
+    void spacePressed();
+
 private slots:
     void updateInspector();
     void updateTime(float time);
+    void setClipDuration(const QString &text);
 };
 
 #endif // CLIPARRANGEMENT_H

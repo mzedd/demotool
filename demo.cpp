@@ -66,6 +66,8 @@ QOpenGLShaderProgram* Demo::addShader(const QString &vertShaderFile, const QStri
     // if all goes well add shader to list
     shaderList.push_back(shaderProgram);
 
+    qDebug() << shaderList.size();
+
     return shaderProgram;
 }
 
