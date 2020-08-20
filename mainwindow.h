@@ -18,6 +18,5 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    TimelineModel* model;
 };
 #endif // MAINWINDOW_H

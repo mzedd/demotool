@@ -1,5 +1,7 @@
 #include "demo.h"
 
+#include <scene/ShaderOnlyScene.h>
+
 Demo::Demo()
 {
 
@@ -7,7 +9,9 @@ Demo::Demo()
 
 Demo::~Demo()
 {
-
+    for(Scene* scene : sceneList) {
+        delete scene;
+    }
 }
 
 Demo &Demo::instance()
@@ -16,16 +20,18 @@ Demo &Demo::instance()
     return _instance;
 }
 
-Scene &Demo::addScene()
+Scene* Demo::addScene()
 {
-    sceneList.push_back(Scene());
-
-    return sceneList.back();
+    Scene* scene = new  ShaderOnlyScene();
+    sceneList.push_back(scene);
+    return scene;
 }
 
-void Demo::addScene(Scene scene)
+Scene* Demo::addScene(QOpenGLShaderProgram* shader)
 {
+    Scene* scene = new  ShaderOnlyScene(shader);
     sceneList.push_back(scene);
+    return scene;
 }
 
 QOpenGLShaderProgram* Demo::addShader(const QString &vertShaderFile, const QString& fragShaderFile)
@@ -71,19 +77,15 @@ QOpenGLShaderProgram* Demo::addShader(const QString &vertShaderFile, const QStri
     return shaderProgram;
 }
 
-Scene *Demo::getScenePointer(int id)
-{
-    return &sceneList[id];
-}
-
-void Demo::addClip()
+Clip* Demo::addClip()
 {
     clipList.push_back(Clip());
+    return &clipList.back();
 }
 
-Clip &Demo::getClip(int id)
+Clip *Demo::getClip(int id)
 {
-    return clipList[id];
+    return &clipList[id];
 }
 
 bool Demo::removeClips(int id, int count) {
@@ -94,7 +96,7 @@ bool Demo::removeClips(int id, int count) {
     return false;
 }
 
-const size_t Demo::clipCount() const
+size_t Demo::clipCount() const
 {
     return clipList.size();
 }

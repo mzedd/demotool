@@ -27,14 +27,14 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         switch(index.column()) {
         case 0:
-            return QString(Demo::instance().getClip(index.row()).getName());
+            return QString(Demo::instance().getClip(index.row())->getName());
             break;
         case 1:
-            return QVariant(Demo::instance().getClip(index.row()).getDuration());
+            return QVariant(Demo::instance().getClip(index.row())->getDuration());
             break;
         case 2:
-            if(Demo::instance().getClip(index.row()).getScene() != nullptr) {
-                return Demo::instance().getClip(index.row()).getScene()->name;
+            if(Demo::instance().getClip(index.row())->getScene() != nullptr) {
+                return QVariant(QString("Scene name"));
             }
             return QVariant(QString());
             break;
@@ -84,10 +84,10 @@ bool TimelineModel::setData(const QModelIndex &index, const QVariant &value, int
     if(role == Qt::EditRole) {
         switch(index.column()) {
         case 0:
-            Demo::instance().getClip(index.row()).setName(value.toString());
+            Demo::instance().getClip(index.row())->setName(value.toString());
             break;
         case 1:
-            Demo::instance().getClip(index.row()).setDuration(value.toFloat());
+            Demo::instance().getClip(index.row())->setDuration(value.toFloat());
             break;
         }
 

@@ -195,7 +195,7 @@ void TimelineView::mousePressEvent(QMouseEvent *event)
             setCurrentIndex(index);
             if(index.isValid()) {
                 setCursor(Qt::ClosedHandCursor);
-                emit clipSelectionChanged(&Demo::instance().getClip(index.row()));
+                emit clipSelectionChanged(Demo::instance().getClip(index.row()));
             }
             viewport()->update();
         }
@@ -234,7 +234,7 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
             QModelIndex index = indexAt(event->pos());
             if(index != currentIndex()) {
                 model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
-                emit clipSelectionChanged(&Demo::instance().getClip(index.row()));
+                emit clipSelectionChanged(Demo::instance().getClip(index.row()));
             }
             setCursor(Qt::ArrowCursor);
             viewport()->update();
@@ -321,7 +321,7 @@ void TimelineView::updateCursor(float time)
     QModelIndex index = indexAt(QPoint(cursor->x(), TIMEAXIS_HEIGHT+5.0f));
 
     if(index.isValid())
-        emit activeClipChanged(&Demo::instance().getClip(index.row()));
+        emit activeClipChanged(Demo::instance().getClip(index.row()));
     else
         emit activeClipChanged(nullptr);
 }

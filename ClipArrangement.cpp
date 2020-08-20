@@ -13,7 +13,7 @@ ClipArrangement::ClipArrangement(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    model = new TimelineModel(); 
+    model = new TimelineModel();
     ui->timelineView->setModel(model);
 
     connect(ui->timelineView, SIGNAL(zoomChanged(QString)), ui->lbl_zoom, SLOT(setText(QString)));

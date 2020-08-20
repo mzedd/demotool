@@ -2,15 +2,15 @@
 #define DEMO_H
 
 #include <QOpenGLShaderProgram>
-#include "scene/Scene.h"
-#include "demo/Clip.h"
+#include <scene/Scene.h>
+#include <demo/Clip.h>
 
 #include <vector>
 
 class Demo
 {
 private:
-    std::vector<Scene> sceneList;
+    std::vector<Scene*> sceneList;
     std::vector<Clip> clipList;
     std::vector<QOpenGLShaderProgram*> shaderList;
 
@@ -25,14 +25,13 @@ public:
 
     static Demo& instance();
 
-    Scene& addScene();
-    void addScene(Scene scene);
-    Scene* getScenePointer(int id);
+    Scene *addScene();
+    Scene *addScene(QOpenGLShaderProgram* shader);
 
-    void addClip();
-    Clip &getClip(int id);
+    Clip *addClip();
+    Clip *getClip(int id);
     bool removeClips(int id, int count);
-    const size_t clipCount() const;
+    size_t clipCount() const;
     bool swapClips(int idA, int idB);
 
     QOpenGLShaderProgram *addShader(const QString &vertShaderFile, const QString& fragShaderFile);
