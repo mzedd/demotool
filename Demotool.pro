@@ -17,9 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     ClipArrangement.cpp \
-    Timeline.cpp \
     openglwindow.cpp \
-    #src/demo/Timeline.cpp \
     src/demo/Clip.cpp \
     src/demo/timelineitem.cpp \
     src/demo/timelinemodel.cpp \
@@ -32,9 +30,7 @@ SOURCES += \
 
 HEADERS += \
     ClipArrangement.h \
-    Timeline.h \
     openglwindow.h \
-    #src/demo/Timeline.h \
     src/demo/Clip.h \
     src/demo/timelineitem.h \
     src/demo/timelinemodel.h \

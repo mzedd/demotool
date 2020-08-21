@@ -1,6 +1,6 @@
 #version 330 core
 
-attribute highp vec3 vertex;
+layout (location = 0) in vec3 vertex;
 
 void main(void)
 {

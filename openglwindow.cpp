@@ -24,9 +24,7 @@ void OpenGLWindow::initializeGL() {
     makeCurrent();
     initializeOpenGLFunctions();
 
-    QOpenGLShaderProgram *program = Demo::instance().addShader("data/shader/quad.vert", "data/shader/voronoi.frag");
-    program->setObjectName("default shader");
-    Scene* scene = Demo::instance().addScene(program);
+    Scene* scene = Demo::instance().addScene();
 
     // testing
     Clip *clip = Demo::instance().addClip();
@@ -34,18 +32,25 @@ void OpenGLWindow::initializeGL() {
     clip->setDuration(50.0f);
     clip->attachScene(scene);
 
+    currentClip = clip;
+
     glViewport(0, 0, width(), height());
 }
 
 void OpenGLWindow::resizeGL(int w, int h) {
     glViewport(0, 0, w, h);
 
-    Demo::instance().getShaderProgram(0).bind();
-    Demo::instance().getShaderProgram(0).setUniformValue("iResolution", QVector2D(w,h));
+    viewportSize = QVector2D(w, h);
+
+    qDebug() << viewportSize;
+
+    if(currentClip) {
+        currentClip->getScene()->setViewportResolution(viewportSize);
+    }
 }
 
 void OpenGLWindow::paintGL() {
-    glClearColor(.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if(run) {
@@ -56,14 +61,12 @@ void OpenGLWindow::paintGL() {
         qDebug() << demoTime << " current time" << currentTime << "lastFramTime: " << lastFrameTime;
     }
 
-
     if(currentClip) {
-        currentClip->render(demoTime/currentClip->getDuration());
+        qDebug() << "Clip name: " << currentClip->getName();
+        currentClip->render(demoTime);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         qDebug() << "clip renderd";
     }
-
-    qDebug() << "run";
 
     if(run) {
         update();
@@ -75,6 +78,7 @@ void OpenGLWindow::clipSelectionChanged(Clip *clip)
     qDebug() << "current clip changed";
 
     currentClip = clip;
+    currentClip->getScene()->setViewportResolution(viewportSize);
 
     update();
 }

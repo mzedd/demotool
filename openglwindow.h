@@ -20,6 +20,7 @@ private:
     float deltaTime;
     float demoTime;
     bool run;
+    QVector2D viewportSize;
 
 public:
     OpenGLWindow(QWidget *parent);

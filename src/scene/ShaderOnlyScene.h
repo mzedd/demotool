@@ -9,12 +9,14 @@
 class ShaderOnlyScene : public Scene
 {
 private:
-    QOpenGLShaderProgram* shader;
+    QOpenGLShaderProgram shaderProgram;
+    QOpenGLVertexArrayObject vao;
+    QOpenGLBuffer vbo;
 public:
     ShaderOnlyScene();
-    ShaderOnlyScene(QOpenGLShaderProgram* shader);
     void renderAt(float time);
-    void setShader(QOpenGLShaderProgram* shader);
+    bool setShader(const QString& filename);
+    void setViewportResolution(QVector2D resolution);
 };
 
 #endif // SHADERONLYSCENE_H
