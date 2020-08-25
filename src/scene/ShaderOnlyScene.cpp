@@ -2,6 +2,7 @@
 
 ShaderOnlyScene::ShaderOnlyScene()
 {
+    name = QString("default shader only scene");
     setShader("data/shader/voronoi.frag");
 
     float vertices[] = {
@@ -67,7 +68,6 @@ bool ShaderOnlyScene::setShader(const QString& filename)
 
 void ShaderOnlyScene::setViewportResolution(QVector2D resolution)
 {
-    qDebug() << resolution;
     shaderProgram.bind();
     shaderProgram.setUniformValue("iResolution", resolution);
 }

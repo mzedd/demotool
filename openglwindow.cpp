@@ -78,7 +78,10 @@ void OpenGLWindow::clipSelectionChanged(Clip *clip)
     qDebug() << "current clip changed";
 
     currentClip = clip;
-    currentClip->getScene()->setViewportResolution(viewportSize);
+
+    if(currentClip) {
+        currentClip->getScene()->setViewportResolution(viewportSize);
+    }
 
     update();
 }

@@ -33,8 +33,9 @@ QVariant TimelineModel::data(const QModelIndex &index, int role) const
             return QVariant(Demo::instance().getClip(index.row())->getDuration());
             break;
         case 2:
-            if(Demo::instance().getClip(index.row())->getScene() != nullptr) {
-                return QVariant(QString("Scene name"));
+            Scene *scene = Demo::instance().getClip(index.row())->getScene();
+            if(scene) {
+                return QVariant(scene->getName());
             }
             return QVariant(QString());
             break;

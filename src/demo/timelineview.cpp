@@ -180,7 +180,6 @@ QRegion TimelineView::visualRegionForSelection(const QItemSelection& /*selection
 
 void TimelineView::mousePressEvent(QMouseEvent *event)
 {
-    QModelIndex index = indexAt(event->pos());
     switch(event->button()) {
         case Qt::LeftButton:
         // first check for cursor selection
@@ -189,13 +188,25 @@ void TimelineView::mousePressEvent(QMouseEvent *event)
         } else if(event->pos().y() <= TIMEAXIS_HEIGHT) {
             qDebug() << "scrubb";
             emit cursorUpdated(setCursorPosition(event->pos().x()));
+
+            QModelIndex index = indexAt(QPoint(event->pos().x(), TIMEAXIS_HEIGHT + 5.0f));
+
+            if(index.isValid()) {
+                setCurrentIndex(index);
+                emit selectedClipChanged(Demo::instance().getClip(index.row()));
+            } else {
+                setCurrentIndex(index);
+                emit selectedClipChanged(nullptr);
+            }
+
             viewport()->update();
         } else {
+            QModelIndex index = indexAt(event->pos());
             qDebug() << "select";
             setCurrentIndex(index);
             if(index.isValid()) {
                 setCursor(Qt::ClosedHandCursor);
-                emit clipSelectionChanged(Demo::instance().getClip(index.row()));
+                emit selectedClipChanged(Demo::instance().getClip(index.row()));
             }
             viewport()->update();
         }
@@ -234,7 +245,7 @@ void TimelineView::mouseReleaseEvent(QMouseEvent *event)
             QModelIndex index = indexAt(event->pos());
             if(index != currentIndex()) {
                 model()->moveRow(currentIndex(), currentIndex().row(), index, index.row());
-                emit clipSelectionChanged(Demo::instance().getClip(index.row()));
+
             }
             setCursor(Qt::ArrowCursor);
             viewport()->update();
@@ -293,11 +304,11 @@ float TimelineView::setCursorPosition(const int position)
 void TimelineView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
     viewport()->update();
+    QAbstractItemView::dataChanged(topLeft, bottomRight, roles);
 }
 
 void TimelineView::addClip()
 {
-
     qDebug() << "Adding Clip";
     model()->insertRow(model()->rowCount());
     viewport()->update();

@@ -57,7 +57,7 @@ private:
 
 signals:
     void zoomChanged(QString text);
-    void clipSelectionChanged(Clip *clip);
+    void selectedClipChanged(Clip *clip);
     void cursorUpdated(float time);
     void activeClipChanged(Clip *clip);
 
